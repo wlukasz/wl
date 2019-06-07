@@ -97,7 +97,7 @@ div.formfields {
 
 #paralax {
 	font-family: sans-serif;
-	font-decorarion: none;
+	text-decoration: none; 
 	font-size: 0.8em;
 	color: black;
 }
@@ -412,7 +412,7 @@ div.formfields {
 				<li id="topmenutitle2" class="topmenutitles" value="2">2and Awayand Awayand Awayand Away</li>
 				<li id="topmenutitle3" class="topmenutitles" value="3">3and Backand Backand Backand</li>
 				<li id="topmenutitle4" class="topmenutitles" value="4">4and Backand Backand Backand</li>
-				<li id="topmenutitle25" class="topmenutitles" value="25" style=""><div id="userbizotitle"></div></li>
+				<li id="topmenutitle25" class="topmenutitles" value="25"><div id="userbizotitle"></div></li>
 				
 			</ol> <!-- topmenuolist -->
    		</div> <!-- navbar -->
@@ -431,7 +431,7 @@ div.formfields {
 			<div id="topmenutitle25-menuitem" class="topmenuitems" >
 				<div class="inlineblock" style="width: 50%;list-style-type: none;font-size: 1.3em;line-height: 2.1em;">
 					<!-- <span style="font-size: 1.0em;">All about youser...</span> -->
-					<ol class="inlineblock" style="list-style-type: none;margin-top; 0;font-size: 1.3em;">
+					<ol class="inlineblock" style="list-style-type: none;margin-top: 0;font-size: 1.3em;">
 						<li id="userjoin" class="userlinks loggedout" class="userlinks" style="text-align: right;">Join Us<br><p style="margin-top: 0;text-align: left;font-size: 0.6em;line-height: 1.1em;">Why join? We will keep your work for you to access at anytime. You may continue as a guest but your work will be deleted at the end of your session. That's why. </p></li>
 						<li id="userlogin" class="userlinks loggedout">Log In</li>
 						<li id="userfpass" class="userlinks loggedout" style="text-align: right;font-size: 0.8em;">Forgot Passsword?</li>
@@ -471,7 +471,7 @@ Rainfall &amp; River Conditions
 			</div> <!-- homecontents -->
 	
 			<div id="userjoin-content" class="contentscontainers" style="background: url('img/user-join.png');background-size: cover;">
-				<div class="inlineblock" style=""><img src="img/user-join.jpg" alt="Join us..."></div>
+				<div class="inlineblock"><img src="img/user-join.jpg" alt="Join us..."></div>
 				<div class="inlineblock" style="vertical-align: top;height: 100%;font-size: 1.3em;line-height: 2.1em;">
 					<div style="margin: 0 0 0 2em;"><p style="float:none; width: 100%;font-family: Arial;">Join Us</p></div>
 					<form id="join-form" class="user-biznes-form" action="<?php echo $_SERVER['PHP_SELF'];?>" method="post" enctype="multipart/form-data">
@@ -521,7 +521,7 @@ Rainfall &amp; River Conditions
 			</div> <!-- userjoin -->
 	
 			<div id="userlogin-content" class="contentscontainers" style="background: url('img/user-login.png');background-size: cover;">
-				<div class="inlineblock" style=""><img src="img/user-login.jpg" alt="Log In..."></div>
+				<div class="inlineblock"><img src="img/user-login.jpg" alt="Log In..."></div>
 				<div class="inlineblock" style="vertical-align: top;font-size: 1.3em;line-height: 2.1em;">
 					<div style="margin: 0 0 0 2em;"><p id="log-in-title" style="float:none; width: 100%;font-family: Arial;">Log In</p></div>
 					<form id="login-form" class="user-biznes-form" action="<?php echo $_SERVER['PHP_SELF'];?>" method="post" enctype="multipart/form-data">
@@ -552,7 +552,7 @@ Rainfall &amp; River Conditions
 			</div> <!-- userlogin -->
 	
 			<div id="resetpass-content" class="contentscontainers" style="background: url('img/user-cpass.png');background-size: cover;">
-				<div class="inlineblock" style=""><img src="img/user-cpass.jpg" alt="Reset Password..."></div>
+				<div class="inlineblock"><img src="img/user-cpass.jpg" alt="Reset Password..."></div>
 				<div class="inlineblock" style="vertical-align: top;font-size: 1.3em;line-height: 2.1em;">
 					<div style="margin: 0 0 0 2em;"><p style="float:none; width: 100%;font-family: Arial;">Reset Password</p></div>
 					<form id="resetpass-form" class="user-biznes-form" action="<?php echo $_SERVER['PHP_SELF'];?>" method="post" enctype="multipart/form-data">
@@ -585,7 +585,7 @@ Rainfall &amp; River Conditions
 			</div> <!-- resetpass -->
 	
 			<div id="usercpass-content" class="contentscontainers" style="background: url('img/user-cpass.png');background-size: cover;">
-				<div class="inlineblock" style=""><img src="img/user-cpass.jpg" alt="Change Password..."></div>
+				<div class="inlineblock"><img src="img/user-cpass.jpg" alt="Change Password..."></div>
 				<div class="inlineblock" style="vertical-align: top;font-size: 1.3em;line-height: 2.1em;">
 					<div style="margin: 0 0 0 2em;"><p style="float:none; width: 100%;font-family: Arial;">Change Password</p></div>
 					<form id="cpass-form" class="user-biznes-form" action="<?php echo $_SERVER['PHP_SELF'];?>" method="post" enctype="multipart/form-data">
@@ -622,7 +622,7 @@ Rainfall &amp; River Conditions
 			</div> <!-- usercpass -->
 	
 			<div id="userfpass-content" class="contentscontainers" style="background: url('img/user-fpass.png');background-size: cover;">
-				<div class="inlineblock" style=""><img src="img/user-fpass.jpg" alt="Forgot Password..."></div>
+				<div class="inlineblock"><img src="img/user-fpass.jpg" alt="Forgot Password..."></div>
 				<div class="inlineblock" style="vertical-align: top;font-size: 1.3em;line-height: 2.1em;">
 					<div style="margin: 0 0 0 2em;"><p style="float:none; width: 100%;font-family: Arial;">Forgot Password</p></div>
 					<form id="fpass-form" class="user-biznes-form" action="<?php echo $_SERVER['PHP_SELF'];?>" method="post" enctype="multipart/form-data">
@@ -646,7 +646,7 @@ Rainfall &amp; River Conditions
 			</div> <!-- userfpass -->
 	
 			<div id="userprof-content" class="contentscontainers" style="background: url('img/user-prof.png');background-size: cover;">
-				<div class="inlineblock" style=""><img src="img/user-prof.jpg" alt="Update your identity..."></div>
+				<div class="inlineblock"><img src="img/user-prof.jpg" alt="Update your identity..."></div>
 				<div class="inlineblock" style="vertical-align: top;font-size: 1.3em;line-height: 2.1em;">
 					<div style="margin: 0 0 0 2em;"><p style="float:none; width: 100%;font-family: Arial;">Update Your Identity Record</p></div>
 					<form id="prof-form" class="user-biznes-form" action="<?php echo $_SERVER['PHP_SELF'];?>" method="post" enctype="multipart/form-data">
