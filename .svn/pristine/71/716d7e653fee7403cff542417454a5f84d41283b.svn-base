@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<buildpath>
+	<buildpathentry kind="src" path="css"/>
+	<buildpathentry kind="src" path="img"/>
+	<buildpathentry kind="src" path="js"/>
+	<buildpathentry kind="src" path="lib"/>
+	<buildpathentry kind="con" path="org.eclipse.php.core.LANGUAGE"/>
+</buildpath>

@@ -1,0 +1,16 @@
+<?php
+# lib/required.php
+
+# IMPORTANT
+# This file contains inclusions required by all pages.
+# Don't mess around with it, the order IS significant!
+# NEVER move this file from its location.
+
+require_once ("lib/environment.php");
+require_once (dirname($_SERVER['DOCUMENT_ROOT']) . "/cr_lib/config.php");
+require_once ("lib/settings.php");
+require_once ("lib/functions.php");
+require_once ("lib/procedures.php");
+require_once ("lib/password.php"); // forward compatibility for PHP pre 5.5
+
+?>

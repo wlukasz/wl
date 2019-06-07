@@ -1,0 +1,25 @@
+<?php
+# lib/required.php
+
+# IMPORTANT
+# This file contains inclusions required by all pages.
+# Don't mess around with it, the order IS significant!
+# NEVER move this file from its location.
+
+$require_path =  dirname( $_SERVER['DOCUMENT_ROOT'] );
+if ( file_exists ( $require_path . "/public_html" ) ) {
+	$require_path .= "/public_html/wl";
+} elseif ( file_exists ( $require_path . "/htdocs" ) ) {
+	$require_path .= "/htdocs/wl";
+} else {
+	die ( 'Cannot configure $require_path');
+}
+
+require_once ( $require_path . "/lib/environment.php" );
+require_once ( dirname( $_SERVER['DOCUMENT_ROOT'] ) . "/wl_lib/config.php" );
+require_once ( $require_path . "/lib/settings.php" );
+require_once ( $require_path . "/lib/functions.php" );
+require_once ( $require_path . "/lib/procedures.php" );
+require_once ( $require_path . "/lib/password.php" ); // forward compatibility for PHP pre 5.5
+
+?>

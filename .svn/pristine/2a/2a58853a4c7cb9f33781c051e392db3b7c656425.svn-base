@@ -1,0 +1,181 @@
+@CHARSET "ISO-8859-1";
+
+/* css/css_styles.css */
+
+/* this is to display stuff wall-to-wall */
+html, body {
+    margin: 0;
+    padding: 0;
+	background-color: white;
+}
+
+/* this is for full screen display */
+*:fullscreen
+*:-ms-fullscreen,
+*:-webkit-full-screen,
+*:-moz-full-screen {
+   overflow: auto !important;
+}
+
+/* all input  */
+input, textarea {
+	color: RoyalBlue;
+	border-radius: 3px;
+	border-color: darkgrey;
+    border-style: solid;
+    border-width: 1px;
+    padding: 10px;
+    width: auto; 
+    font-weight: 400;
+    font-size: 0.77em;
+    line-height: normal;
+    font-family: Arial;
+}
+
+input:hover {
+	border-color: red;
+}
+
+.inlineblock {
+	display: inline-block;
+}
+.floatright {
+	float:right;
+}
+
+.loading-img {
+	display: none;
+}
+
+/* ---------------------------------------------------------------------------------------------------- */
+
+/* main page areas ------------------------------------------------------------------------------------ */
+
+#theverytop {
+    margin: 0;
+    padding: 0;
+	width: 100%;
+	font-size: 0;
+}
+
+#logoandstuff {
+	display: inline-block;
+	width: 35%;
+	height: 90px;
+	background-color: #ffff00;
+}
+
+#topadbanner {
+	display: inline-block;
+	float: right;
+	width: 65%;
+	height: 90px;
+	background-color: #ff80ff;
+}
+
+.mainbodycontainers {
+    margin: 0;
+    padding: 0;
+	display: inline-block;
+}
+#maincontentscontainer {
+	width: 70%;
+	background-color: white;
+}
+
+#rightpaneforads {
+	width: 30%;
+	background-color: #0080ff;
+}
+
+.contentscontainers {
+	display: none;
+}
+
+/* ------------------------------------------------------------------------------------------------------ */
+
+/* handling top menu ------------------------------------------------------------------------------------ */
+
+#navbar {
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	background-color: white;
+}
+
+.topmenutitles {
+	display: inline-block;
+	margin: 0px;
+	padding: 15px;
+	cursor: pointer;
+	text-align:center;
+    font-weight: 400;
+    font-size: 2.5em ; /* this is because parent (<ol>) font-size is set to 5px to achieve tiny spacing between menu titles */
+    line-height: normal;
+    font-family: Arial;
+}
+
+.divtopmenuicons {
+    padding: 0 0 0 15px;
+	cursor: pointer;
+}
+
+.topmenuicon {
+    padding: 0;
+    vertical-align:middle;
+}
+
+#topmenuolist {
+	padding: 0 0 0 0;
+	margin: 0 25px 0 25px;
+	font-size: 0.3em;
+}
+
+#topdropmenu {
+	position: fixed; /* "position: fixed" is CRITICALLY !important  to prevent page content shifting down on menu slideDown */
+    display: none;
+	width: 50%;
+	border-radius: 0 0 3px 3px;
+	border-color: darkgrey;
+    border-style: solid;
+    border-width: 1px;
+    padding: 10px;
+	background-color: white;
+    color:  black;
+    font-weight: normal;
+    font-size: 0.77em;
+    line-height: normal;
+    font-family: Arial;
+    /* box-shadow: 5px 5px 5px Silver; */
+}
+
+.topmenuitems {
+    display: none;
+}
+
+.userlinks {
+	cursor: pointer;
+}
+
+/* ---------------------------------------------------------------------------------------------------------- */
+
+
+/* handling input labels ------------------------------------------------------------------------------------ */
+
+/* divs with an input element & a span with label */
+.input-container {
+	margin: 5px;
+}
+
+/* span with text input label */
+.textbox-label {
+	opacity: 0.0;
+	display: block;
+	color: grey;
+    font-weight: normal;
+    font-size: 0.77em;
+    line-height: normal;
+    font-family: Arial;
+}
+
+/* ---------------------------------------------------------------------------------------------------------- */

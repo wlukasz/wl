@@ -1,0 +1,29 @@
+This is upgrade from version 0.0.0 to 0.0.1: 
+project started: 	22 Mar 2018 
+	implemented:	
+
+- REMEMBER: to U P D A T E  constant "VERSION" in lib/settings.php 
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+Overview of change: 
+
+1. Initial setup
+ 
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+New Tables to be created/populated:
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+Existing Tables to be modified:
+ 
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+Notes:
+
+-	Hiding/showing placeholders in input textboxes:
+	ID of label of a textbox MUST have format of "<textbox.id>-label"
+	i.e. if textbox.id="username" then label.id="username-label" or it won't work
+	
+-	Top Menu rules:
+	- IDs of class .topmenuitems must consist of corresponding <li> items' IDs in .topmenuolist and word "-menuitem"
+		e.g. if "topmenutitle1" then "topmenutitle1-menuitem" 
