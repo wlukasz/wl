@@ -74,9 +74,10 @@
 <html>
 <head>
 	<title>index</title>
+	<link rel="shortcut icon" href="favicon.ico" />
     <meta charset="utf-8">
-<!--     <meta name="viewport" content="width=device-width, initial-scale=1">
- -->    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/> 
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>  -->
 	<?php include("inc/css.inc"); ?>
 <style>
 	/* grid definitions */
@@ -445,7 +446,7 @@ div.formfields {
 <body id="thebody">
 <!-- index-page -->
 	<div data-role="page" id="index-page" class="grid">
-		<div id="logo" style="height: 95px;padding: 15px;font-family:Arial, Helvetica, sans-serif;font-size: 1.5em;color: black;"></div>
+		<div id="logo" style="height: 95px;font-family:Arial, Helvetica, sans-serif;font-size: 1.5em;color: black;padding-left: 15px;"></div>
 		<div style="height: 95px;background: url('img/top-banner.jpg');background-size: cover;"></div>
 		<!-- navbar menu -->
 		<div id="navbar">
@@ -464,9 +465,10 @@ div.formfields {
 	
 			<ol id="topmenuolist" class="inlineblock">
 				<!-- all menu titles must have ascending numeric values -->
-				<li id="topmenutitle2" class="topmenutitles" value="2">2and Awayand Awayand Awayand Away</li>
-				<li id="topmenutitle3" class="topmenutitles" value="3">3and Backand Backand Backand</li>
-				<li id="topmenutitle4" class="topmenutitles" value="4">4and Backand Backand Backand</li>
+				<li id="topmenutitle1" class="topmenutitles" value="1">Reserved 1</li>
+				<li id="topmenutitle2" class="topmenutitles" value="2">Weather</li>
+				<li id="topmenutitle3" class="topmenutitles" value="3">Reserved 3</li>
+				<li id="topmenutitle4" class="topmenutitles" value="4">Reserved 4</li>
 				<li id="topmenutitle25" class="topmenutitles" value="25"><div id="userbizotitle"></div></li>
 				
 			</ol> <!-- topmenuolist -->
@@ -479,6 +481,9 @@ div.formfields {
 					Skip to main content Australian Government - Bureau of Meteorology Search Enter search terms HOMEABOUTMEDIACONTACTS NSW NSW Weather &amp; Warnings Warnings Summary Forecasts Sydney Forecast NSW Forecast Area Map Observations Sydney Observations All NSW Observations Rainfall &amp; River Conditions
 				</p>
 			</div> <!-- homecontents -->
+
+			<div id="weathercontents" class="contentscontainers">
+			</div> <!-- weathercontents -->
 
 			<div id="userjoin-content" class="contentscontainers" style="background: url('img/user-join.png');background-size: cover;">
 				<div class="inlineblock"><img src="img/user-join.jpg" alt="Join us..."></div>
@@ -708,10 +713,10 @@ div.formfields {
  
 	    <!-- menu items displayed in container.id="topdropmenu" -->
 	    <!-- Note! All IDs here must correspond to "topmenutitles' IDs"+"-menuitem", otherwise it will display crap -->
-			<div id="topmenutitle1-menuitem" class="topmenuitems" >topmenutitle1-menuitem<br>topmenutitle1-menuitem<br>topmenutitle1-menuitem<br>topmenutitle1-menuitem<br>topmenutitle1-menuitem<br>topmenutitle1-menuitem<br>topmenutitle1-menuitem<br></div>
-			<div id="topmenutitle2-menuitem" class="topmenuitems" >topmenutitle2-menuitem<br>topmenutitle2-menuitem<br>topmenutitle2-menuitem<br>topmenutitle2-menuitem<br>topmenutitle2-menuitem<br>topmenutitle2-menuitem<br>topmenutitle2-menuitem<br>topmenutitle2-menuitem<br>topmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitem</div>
-			<div id="topmenutitle3-menuitem" class="topmenuitems" >topmenutitle3-menuitem<br>topmenutitle3-menuitem<br><a href="https://peterlandlord.com.au">PL</a><br>topmenutitle3-menuitem<br>topmenutitle3-menuitem<br>topmenutitle3-menuitem<br>topmenutitle3-menuitemtopmenutitle3-menuitemtopmenutitle3-menuitemtopmenutitle3-men</div>
-			<div id="topmenutitle4-menuitem" class="topmenuitems" >topmenutitle4-menuitem<br>topmenutitle4-menuitem<br>topmenutitle4-menuitem<br>topmenutitle4-menuitem<br>topmenutitle4-menuitem<br>topmenutitle4-menuitem<br></div>
+			<div id="topmenutitle1-menuitem" class="topmenuitems" >This item is reserved for future use</div>
+			<div id="topmenutitle2-menuitem" class="topmenuitems" >Weather</div>
+			<div id="topmenutitle3-menuitem" class="topmenuitems" >This item is reserved for future use</div>
+			<div id="topmenutitle4-menuitem" class="topmenuitems" >This item is reserved for future use</div>
 	
 			<!-- User's Business -->
 			<div id="topmenutitle25-menuitem" class="topmenuitems" >

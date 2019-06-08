@@ -16,7 +16,7 @@ js/functions.js
 	var VisibleMenuContentID = 'dummyVisibleMenuContentID';
 	var VisibleContentID = 'homecontents';
 	
-	// this will execute on every page that loads js/cr_functions.js - i.e. this file.
+	// this will execute on every page that loads js/functions.js - i.e. this file.
 	$( document ).ready( function() {
 		
 // --- Handling screen size ----------------------------------------------------------------------------------------------------------------- 
@@ -167,7 +167,7 @@ js/functions.js
 			$( clickedMenuTitle ).css( 'background-color' , titleColorClicked );
 		
 			// figure out position to display topdropmenu
-//			var windowWidth = parseFloat( $( window ).width() );
+			var windowWidth = parseFloat( $( window ).width() );
 //			var navBarWidth = parseFloat( $( '#navbar ').css( 'width' ).replace( 'px', '' ) ); // strip 'px' from width property
 			var topMenuOlistWidth = parseFloat( $( '#topmenuolist' ).css( 'width' ).replace( 'px', '' ) ); // strip 'px' from width property
 			var topMenuOlistHeight = parseFloat( $( '#topmenuolist' ).css( 'height' ).replace( 'px', '' ) ); // strip 'px' from height property
@@ -189,7 +189,8 @@ js/functions.js
 			var scroll = $(window).scrollTop(); // top of scroll bar - scroll position
 			var topPosition = offset.top + ( topMenuOlistHeight / adjuster ) - scroll;
 
-			if ( leftPosition > ( topMenuOlistWidth / 2 ) ) { // element pos. more to the right of screen
+//			if ( leftPosition > ( topMenuOlistWidth / 2 ) ) { // element pos. more to the right of screen
+			if ( leftPosition > ( windowWidth / 2 ) ) { // element pos. more to the right of screen
 				var titleWidth = parseFloat( $( clickedMenuTitle ).css( 'width' ).replace( 'px', '' ) );
 				var menuWidth = parseFloat( $( '#topdropmenu' ).css( 'width' ).replace( 'px', '' ) );
 				leftPosition = offset.left + titleWidth - menuWidth + 9;
