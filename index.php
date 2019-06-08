@@ -79,6 +79,51 @@
  -->    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/> 
 	<?php include("inc/css.inc"); ?>
 <style>
+	/* grid definitions */
+
+.grid {
+	display: grid;
+	grid-template-columns: repeat( 15, 1fr );
+	grid-template-rows: repeat( 4, 1fr );
+	grid-gap: 20px;
+}
+
+.grid div:nth-child( 1 ) {
+	grid-column: 1 / 6;
+	grid-row: 1;
+}
+
+.grid div:nth-child( 2 ) {
+	grid-column: 6 / -1;
+	grid-row: 1;
+}
+
+.grid div:nth-child( 3 ) {
+	grid-column: 1 / -1;
+	grid-row: 2;
+}
+
+.grid div:nth-child( 11 ) {
+	grid-column: 1 / 5;
+	grid-row: 3;
+}
+
+.grid div:nth-child( 5 ) {
+	grid-column: 11 / -1;
+	grid-row: 3;
+}
+
+.grid div:nth-child( 6 ) {
+	grid-column: 1 / -1;
+	grid-row: 4;
+}
+
+/* @media( min-width: 640px ) {
+	.grid {
+	}
+} */
+
+	/* end of grid definitions */
 
 .userlinks:hover {
 	background-color: WhiteSmoke;
@@ -377,6 +422,17 @@ div.formfields {
 </script>
 </head>
 <body id="thebody">
+<!-- mygridpage -->
+	<div data-role="page" class="grid" style="background-color: blue;">
+		<div>Logo</div>
+		<div>Top Banner</div>
+		<div>Menu bar</div>
+		<div>Main</div>
+		<div>Aside</div>
+		<div>Footer</div>
+	</div> 
+<!-- /mygridpage -->
+
 <!-- index-page -->
     <div data-role="page" id="index-page">
  		

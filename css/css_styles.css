@@ -1,4 +1,4 @@
-@CHARSET "ISO-8859-1";
+/* @CHARSET "ISO-8859-1"; */
 
 /* css/css_styles.css */
 
@@ -67,7 +67,7 @@ input:hover {
 
 #topadbanner {
 	display: inline-block;
-	float: right;
+	/* float: right; */
 	width: 65%;
 	height: 90px;
 	background-color: #ff80ff;
