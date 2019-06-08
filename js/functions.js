@@ -203,35 +203,6 @@ js/functions.js
 			$( '#topdropmenu' ).focus();
 		} //show_menu_items ()
 		
-/*
-		Toggles full screen view.
-		elem can be ( document.body ) for full page or an id of any element i.e. ( document.getElementById( 'some-id' ) )
-		use ( document.documentElement ) for full page - ( document.body ) works but produces no vertical scrollbar	
-*/	
-		function toggleFullScreen ( elem ) {
-		  if ((document.fullScreenElement !== undefined && document.fullScreenElement === null) || (document.msFullscreenElement !== undefined && document.msFullscreenElement === null) || (document.mozFullScreen !== undefined && !document.mozFullScreen) || (document.webkitIsFullScreen !== undefined && !document.webkitIsFullScreen)) {
-			  if (elem.requestFullScreen) {
-				  elem.requestFullScreen();
-			  } else if (elem.mozRequestFullScreen) {
-		    	elem.mozRequestFullScreen();
-			  } else if (elem.webkitRequestFullScreen) {
-		    	elem.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
-			  } else if (elem.msRequestFullscreen) {
-		    	elem.msRequestFullscreen();
-			  }
-		  } else {
-			  if (document.cancelFullScreen) {
-				  document.cancelFullScreen();
-			  } else if (document.mozCancelFullScreen) {
-				  document.mozCancelFullScreen();
-			  } else if (document.webkitCancelFullScreen) {
-				  document.webkitCancelFullScreen();
-			  } else if (document.msExitFullscreen) {
-				  document.msExitFullscreen();
-			  }
-		  }
-		} // toggleFullScreen
-
 // /Local Functions
 // ------------------------------------------------------------------------------------------------------------------------------------------
 		

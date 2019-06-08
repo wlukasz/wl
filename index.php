@@ -84,35 +84,40 @@
 .grid {
 	display: grid;
 	grid-template-columns: repeat( 15, 1fr );
-	grid-template-rows: repeat( 4, 1fr );
-	grid-gap: 20px;
+	grid-template-rows: repeat( 1, 1fr );
+	grid-gap: 1px;
 }
 
-.grid div:nth-child( 1 ) {
+/* logo */
+.grid div:nth-child( 1 ) { 
 	grid-column: 1 / 6;
 	grid-row: 1;
 }
 
+/* top banner */
 .grid div:nth-child( 2 ) {
 	grid-column: 6 / -1;
 	grid-row: 1;
 }
 
+/* menu bar */
 .grid div:nth-child( 3 ) {
 	grid-column: 1 / -1;
 	grid-row: 2;
 }
 
-.grid div:nth-child( 11 ) {
-	grid-column: 1 / 5;
+/* main */
+.grid div:nth-child( 4 ) {
+	grid-column: 1 / 11;
 	grid-row: 3;
 }
-
+/* right hand ad pane */
 .grid div:nth-child( 5 ) {
 	grid-column: 11 / -1;
 	grid-row: 3;
 }
 
+/* footer */
 .grid div:nth-child( 6 ) {
 	grid-column: 1 / -1;
 	grid-row: 4;
@@ -148,13 +153,6 @@ div.formfields {
 }
 
 </style>
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({
-          google_ad_client: "ca-pub-7965923422279087",
-          enable_page_level_ads: true
-     });
-</script>
 	<?php include("inc/js.inc"); ?>
 <script type="text/javascript">
 	
@@ -422,110 +420,43 @@ div.formfields {
 </script>
 </head>
 <body id="thebody">
-<!-- mygridpage -->
-	<div data-role="page" class="grid" style="background-color: blue;">
-		<div>Logo</div>
-		<div>Top Banner</div>
-		<div>Menu bar</div>
-		<div>Main</div>
-		<div>Aside</div>
-		<div>Footer</div>
-	</div> 
-<!-- /mygridpage -->
-
 <!-- index-page -->
-    <div data-role="page" id="index-page">
- 		
- 	<!-- above navbar menu -->
- 		<div id="theverytop">
-	 	<!-- top-left corner, logo etc. -->
- 			<div id="logoandstuff" style="background: url('img/logo.jpg');background-size: cover;"></div>
- 		<!-- top-right corner, space for ad-banner -->
- 			<div id="topadbanner" style="background: url('img/top-banner.jpg');background-size: cover;"></div>
- 		</div><!-- theverytop -->
-     	
-     <!-- navbar menu -->
-     	<div id="navbar">
+	<div data-role="page" id="index-page" class="grid">
+		<div style="height: 95px;background: url('img/logo.jpg');background-size: cover;"></div>
+		<div style="height: 95px;background: url('img/top-banner.jpg');background-size: cover;"></div>
+		<!-- navbar menu -->
+		<div id="navbar">
       	
- 			<div id="homeicon" class="divtopmenuicons inlineblock" title="Home">
- 				<img class="topmenuicon" src="img/home25x25.png" alt="">
- 			</div>
- 			
- 			<div id="fulscreenicon" class="divtopmenuicons inlineblock" onClick="toggleFullScreen( document.documentElement )" title="Toggle Full Screen view">
- 				<img class="topmenuicon" src="img/full-screen-25x25.png" alt="">
- 			</div>
-   	
- 			<div id="wordcrossyicon" class="divtopmenuicons inlineblock" title="Word Crossy">
- 				<a href="word_crossy.php"><img class="topmenuicon" src="img/wc.png" alt=""></a>
- 			</div>
-   	
- 			<div id="paralax" class="divtopmenuicons inlineblock" title="Parallax">
- 				<a href="paralax.php">Parallax</a>
- 			</div>
-   	
+			<div id="homeicon" class="divtopmenuicons inlineblock" title="Home">
+				<img class="topmenuicon" src="img/home25x25.png" alt="">
+			</div>
+
+			<div id="wordcrossyicon" class="divtopmenuicons inlineblock" title="Word Crossy">
+				<a href="word_crossy.php"><img class="topmenuicon" src="img/wc.png" alt=""></a>
+			</div>
+
+			<div id="paralax" class="divtopmenuicons inlineblock" title="Parallax">
+				<a href="paralax.php">Parallax</a>
+			</div>
+	
 			<ol id="topmenuolist" class="inlineblock">
-	     		<!-- all menu titles must have ascending numeric values -->
+				<!-- all menu titles must have ascending numeric values -->
 				<li id="topmenutitle2" class="topmenutitles" value="2">2and Awayand Awayand Awayand Away</li>
 				<li id="topmenutitle3" class="topmenutitles" value="3">3and Backand Backand Backand</li>
 				<li id="topmenutitle4" class="topmenutitles" value="4">4and Backand Backand Backand</li>
 				<li id="topmenutitle25" class="topmenutitles" value="25"><div id="userbizotitle"></div></li>
 				
 			</ol> <!-- topmenuolist -->
-   		</div> <!-- navbar -->
-     	
-	<!-- top drop menu items container - populated dynamically by javascript -->
-		<div id="topdropmenu" tabindex="0"> <!-- tabindex="0" is to allow <div> receive focus, don't know more about it... -->
- 
-	    <!-- menu items displayed in container.id="topdropmenu" -->
-	    <!-- Note! All IDs here must correspond to "topmenutitles' IDs"+"-menuitem", otherwise it will display crap -->
-			<div id="topmenutitle1-menuitem" class="topmenuitems" >topmenutitle1-menuitem<br>topmenutitle1-menuitem<br>topmenutitle1-menuitem<br>topmenutitle1-menuitem<br>topmenutitle1-menuitem<br>topmenutitle1-menuitem<br>topmenutitle1-menuitem<br></div>
-			<div id="topmenutitle2-menuitem" class="topmenuitems" >topmenutitle2-menuitem<br>topmenutitle2-menuitem<br>topmenutitle2-menuitem<br>topmenutitle2-menuitem<br>topmenutitle2-menuitem<br>topmenutitle2-menuitem<br>topmenutitle2-menuitem<br>topmenutitle2-menuitem<br>topmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitem</div>
-			<div id="topmenutitle3-menuitem" class="topmenuitems" >topmenutitle3-menuitem<br>topmenutitle3-menuitem<br><a href="https://peterlandlord.com.au">PL</a><br>topmenutitle3-menuitem<br>topmenutitle3-menuitem<br>topmenutitle3-menuitem<br>topmenutitle3-menuitemtopmenutitle3-menuitemtopmenutitle3-menuitemtopmenutitle3-men</div>
-			<div id="topmenutitle4-menuitem" class="topmenuitems" >topmenutitle4-menuitem<br>topmenutitle4-menuitem<br>topmenutitle4-menuitem<br>topmenutitle4-menuitem<br>topmenutitle4-menuitem<br>topmenutitle4-menuitem<br></div>
-	
-			<!-- User's Business -->
-			<div id="topmenutitle25-menuitem" class="topmenuitems" >
-				<div class="inlineblock" style="width: 50%;list-style-type: none;font-size: 1.3em;line-height: 2.1em;">
-					<!-- <span style="font-size: 1.0em;">All about youser...</span> -->
-					<ol class="inlineblock" style="list-style-type: none;margin-top: 0;font-size: 1.3em;">
-						<li id="userjoin" class="userlinks loggedout" class="userlinks" style="text-align: right;">Join Us<br><p style="margin-top: 0;text-align: left;font-size: 0.6em;line-height: 1.1em;">Why join? We will keep your work for you to access at anytime. You may continue as a guest but your work will be deleted at the end of your session. That's why. </p></li>
-						<li id="userlogin" class="userlinks loggedout">Log In</li>
-						<li id="userfpass" class="userlinks loggedout" style="text-align: right;font-size: 0.8em;">Forgot Passsword?</li>
-						<li id="usercpass" class="userlinks loggedin" style="text-align: right;font-size: 0.8em;">Change Passsword</li>
-						<li id="userprof" class="userlinks loggedin" style="text-align: right;font-size: 0.8em;">Update Your Profile</li>
-						<li id="userlogout" class="userlinks loggedin" style="text-align: right;font-size: 0.8em;">Log Out</li>
-						<li id="userguest" class="userlinks loggedout">Continue as Guest<br><p style="margin-top: 0;text-align: left;font-size: 0.6em;line-height: 1.1em;">As a guest, remember that any work done here will be erased as soon as you finish the session. Finish and take it with you or join and login to enjoy full benefits.</p></li>
-					</ol>
-				</div>
-				<div class="inlineblock floatright"><img src="img/user-bizo-menu.jpg" alt="That's how you do it..."></div>
-			</div> <!-- topmenutitle25-menuitem -->
-		<!-- topmenuitems -------------------------------------------------------------------------------------------------------------------->
-		</div> <!-- topdropmenu -->
-	
-	<!-- main contents container - hidden divs - shown dynamically by javascript -->
+		</div> <!-- navbar -->
+		<!-- main contents container - hidden divs - shown dynamically by javascript -->
 		<div id="maincontentscontainer" class="mainbodycontainers">
-		
+			
 			<div id="homecontents" class="contentscontainers">
-<p>
-Skip to main content
-Australian Government - Bureau of Meteorology
-Search
-Enter search terms
-HOMEABOUTMEDIACONTACTS
-NSW
- 
-NSW Weather &amp; Warnings
-Warnings Summary
-Forecasts
-Sydney Forecast
-NSW Forecast Area Map
-Observations
-Sydney Observations
-All NSW Observations
-Rainfall &amp; River Conditions
-</p>
+				<p>
+					Skip to main content Australian Government - Bureau of Meteorology Search Enter search terms HOMEABOUTMEDIACONTACTS NSW NSW Weather &amp; Warnings Warnings Summary Forecasts Sydney Forecast NSW Forecast Area Map Observations Sydney Observations All NSW Observations Rainfall &amp; River Conditions
+				</p>
 			</div> <!-- homecontents -->
-	
+
 			<div id="userjoin-content" class="contentscontainers" style="background: url('img/user-join.png');background-size: cover;">
 				<div class="inlineblock"><img src="img/user-join.jpg" alt="Join us..."></div>
 				<div class="inlineblock" style="vertical-align: top;height: 100%;font-size: 1.3em;line-height: 2.1em;">
@@ -575,7 +506,7 @@ Rainfall &amp; River Conditions
 					</form>
 				</div>
 			</div> <!-- userjoin -->
-	
+
 			<div id="userlogin-content" class="contentscontainers" style="background: url('img/user-login.png');background-size: cover;">
 				<div class="inlineblock"><img src="img/user-login.jpg" alt="Log In..."></div>
 				<div class="inlineblock" style="vertical-align: top;font-size: 1.3em;line-height: 2.1em;">
@@ -606,7 +537,7 @@ Rainfall &amp; River Conditions
 					</form>
 				</div>
 			</div> <!-- userlogin -->
-	
+
 			<div id="resetpass-content" class="contentscontainers" style="background: url('img/user-cpass.png');background-size: cover;">
 				<div class="inlineblock"><img src="img/user-cpass.jpg" alt="Reset Password..."></div>
 				<div class="inlineblock" style="vertical-align: top;font-size: 1.3em;line-height: 2.1em;">
@@ -639,7 +570,7 @@ Rainfall &amp; River Conditions
 					</form>
 				</div>
 			</div> <!-- resetpass -->
-	
+
 			<div id="usercpass-content" class="contentscontainers" style="background: url('img/user-cpass.png');background-size: cover;">
 				<div class="inlineblock"><img src="img/user-cpass.jpg" alt="Change Password..."></div>
 				<div class="inlineblock" style="vertical-align: top;font-size: 1.3em;line-height: 2.1em;">
@@ -676,7 +607,7 @@ Rainfall &amp; River Conditions
 					</form>
 				</div>
 			</div> <!-- usercpass -->
-	
+
 			<div id="userfpass-content" class="contentscontainers" style="background: url('img/user-fpass.png');background-size: cover;">
 				<div class="inlineblock"><img src="img/user-fpass.jpg" alt="Forgot Password..."></div>
 				<div class="inlineblock" style="vertical-align: top;font-size: 1.3em;line-height: 2.1em;">
@@ -700,7 +631,7 @@ Rainfall &amp; River Conditions
 					</form>
 				</div>
 			</div> <!-- userfpass -->
-	
+
 			<div id="userprof-content" class="contentscontainers" style="background: url('img/user-prof.png');background-size: cover;">
 				<div class="inlineblock"><img src="img/user-prof.jpg" alt="Update your identity..."></div>
 				<div class="inlineblock" style="vertical-align: top;font-size: 1.3em;line-height: 2.1em;">
@@ -739,16 +670,46 @@ Rainfall &amp; River Conditions
 					</form>
 				</div>
 			</div> <!-- userprof -->
-	
+
 		<!-- /Always hidden - contents shown via javascript driven thru top menu-->
 		</div> <!-- maincontentscontainer -->
-
-	<!-- pane to the right for ads -->
+		<!-- pane to the right for ads -->
 		<div id="rightpaneforads" class="mainbodycontainers floatright">
-			AdHere
+		AdHereAdHereAdHereAdHereAdHereAdHereAdHereAdHereAdHereAdHereAdHereAdHereAdHere
 		</div>
-				
-	</div> <!-- /index-page -->
+		<div>Footer</div>
+	</div> 
+     	
+	<!-- top drop menu items container - populated dynamically by javascript -->
+		<div id="topdropmenu" tabindex="0"> <!-- tabindex="0" is to allow <div> receive focus, don't know more about it... -->
+ 
+	    <!-- menu items displayed in container.id="topdropmenu" -->
+	    <!-- Note! All IDs here must correspond to "topmenutitles' IDs"+"-menuitem", otherwise it will display crap -->
+			<div id="topmenutitle1-menuitem" class="topmenuitems" >topmenutitle1-menuitem<br>topmenutitle1-menuitem<br>topmenutitle1-menuitem<br>topmenutitle1-menuitem<br>topmenutitle1-menuitem<br>topmenutitle1-menuitem<br>topmenutitle1-menuitem<br></div>
+			<div id="topmenutitle2-menuitem" class="topmenuitems" >topmenutitle2-menuitem<br>topmenutitle2-menuitem<br>topmenutitle2-menuitem<br>topmenutitle2-menuitem<br>topmenutitle2-menuitem<br>topmenutitle2-menuitem<br>topmenutitle2-menuitem<br>topmenutitle2-menuitem<br>topmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitemtopmenutitle2-menuitem</div>
+			<div id="topmenutitle3-menuitem" class="topmenuitems" >topmenutitle3-menuitem<br>topmenutitle3-menuitem<br><a href="https://peterlandlord.com.au">PL</a><br>topmenutitle3-menuitem<br>topmenutitle3-menuitem<br>topmenutitle3-menuitem<br>topmenutitle3-menuitemtopmenutitle3-menuitemtopmenutitle3-menuitemtopmenutitle3-men</div>
+			<div id="topmenutitle4-menuitem" class="topmenuitems" >topmenutitle4-menuitem<br>topmenutitle4-menuitem<br>topmenutitle4-menuitem<br>topmenutitle4-menuitem<br>topmenutitle4-menuitem<br>topmenutitle4-menuitem<br></div>
+	
+			<!-- User's Business -->
+			<div id="topmenutitle25-menuitem" class="topmenuitems" >
+				<div class="inlineblock" style="width: 50%;list-style-type: none;font-size: 1.3em;line-height: 2.1em;">
+					<!-- <span style="font-size: 1.0em;">All about youser...</span> -->
+					<ol class="inlineblock" style="list-style-type: none;margin-top: 0;font-size: 1.3em;">
+						<li id="userjoin" class="userlinks loggedout" class="userlinks" style="text-align: right;">Join Us<br><p style="margin-top: 0;text-align: left;font-size: 0.6em;line-height: 1.1em;">Why join? We will keep your work for you to access at anytime. You may continue as a guest but your work will be deleted at the end of your session. That's why. </p></li>
+						<li id="userlogin" class="userlinks loggedout">Log In</li>
+						<li id="userfpass" class="userlinks loggedout" style="text-align: right;font-size: 0.8em;">Forgot Passsword?</li>
+						<li id="usercpass" class="userlinks loggedin" style="text-align: right;font-size: 0.8em;">Change Passsword</li>
+						<li id="userprof" class="userlinks loggedin" style="text-align: right;font-size: 0.8em;">Update Your Profile</li>
+						<li id="userlogout" class="userlinks loggedin" style="text-align: right;font-size: 0.8em;">Log Out</li>
+						<li id="userguest" class="userlinks loggedout">Continue as Guest<br><p style="margin-top: 0;text-align: left;font-size: 0.6em;line-height: 1.1em;">As a guest, remember that any work done here will be erased as soon as you finish the session. Finish and take it with you or join and login to enjoy full benefits.</p></li>
+					</ol>
+				</div>
+				<div class="inlineblock floatright"><img src="img/user-bizo-menu.jpg" alt="That's how you do it..."></div>
+			</div> <!-- topmenutitle25-menuitem -->
+		</div> 
+	<!-- topdropmenu -->
+	</div> 
+<!-- /index-page -->
  
 </body>
 </html>
