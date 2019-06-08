@@ -169,6 +169,9 @@ div.formfields {
 		<?php } else { ?>
 			$( '.loggedin' ).hide();
 			$( '#userbizotitle' ).html( "User's Business" );
+			$( '#logo' ).html( "" );
+			$( '#logo' ).css( "background", "url('img/logo.jpg')" );
+			$( '#logo' ).css( "background-size", "cover" );
 		<?php } ?>
 
 		<?php if ( isset( $_GET['reg'] ) ) { ?>
@@ -239,6 +242,9 @@ div.formfields {
 						$( '#emailprof' ).val( '' );
 						$( '#usernameprof' ).val( '' );
 						$( '#userbizotitle' ).html( "User's Business" );
+						$( '#logo' ).html( "" );
+						$( '#logo' ).css( "background", "url('img/logo.jpg')" );
+						$( '#logo' ).css( "background-size", "cover" );
 
 						$( '#'+VisibleContentID ).css( 'display' , 'none' );
 						VisibleContentID = 'homecontents';
@@ -247,7 +253,7 @@ div.formfields {
 							slide_up_topmenu ();
 						}
 						
-						alert(msg.errmsg);
+//						alert(msg.errmsg);
 				    },
 				    error: function (jqXHR, textStatus, errorThrown) {
 						alert("Network Error! "+msg.errmsg);
@@ -344,6 +350,13 @@ div.formfields {
 						$( '.loggedout' ).hide();
 						$( '.loggedin' ).show();
 						get_user_details();
+						if ( msg.action == "login" ) {
+							setTimeout( function() { 
+								$( '#'+VisibleContentID ).css( 'display' , 'none' );
+								VisibleContentID = 'homecontents';
+								$( '#'+VisibleContentID ).css( 'display' , 'block' );
+				 			}, 3000);
+						}
 					}	
 					
 					if ( msg.rc == "1" && msg.action == "resetpass" ) {
@@ -405,6 +418,16 @@ div.formfields {
 						$( '#emailprof' ).val( msg.result['email'] );
 						$( '#usernameprof' ).val( msg.result['username'] );
 						$( '#userbizotitle' ).html( msg.result['first_name']+"'s Business" );
+						$( '#logo' ).html( "Welcome "+msg.result['first_name'] );
+						$( '#logo' ).css( "background", "" );
+						$( '#logo' ).css( "display", "flex" );
+						$( '#logo' ).css( "align-items", "center" );
+
+						setTimeout( function() { 
+							$( '#logo' ).html( "" );
+							$( '#logo' ).css( "background", "url('img/logo.jpg')" );
+							$( '#logo' ).css( "background-size", "cover" );
+						}, 3000);
 					} else {
 						alert ( msg.errmsg );
 					}
@@ -422,7 +445,7 @@ div.formfields {
 <body id="thebody">
 <!-- index-page -->
 	<div data-role="page" id="index-page" class="grid">
-		<div style="height: 95px;background: url('img/logo.jpg');background-size: cover;"></div>
+		<div id="logo" style="height: 95px;padding: 15px;font-family:Arial, Helvetica, sans-serif;font-size: 1.5em;color: black;"></div>
 		<div style="height: 95px;background: url('img/top-banner.jpg');background-size: cover;"></div>
 		<!-- navbar menu -->
 		<div id="navbar">

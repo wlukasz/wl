@@ -103,7 +103,7 @@ input:hover {
 
 .topmenutitles {
 	display: inline-block;
-	margin: 0px;
+	margin: 3px;
 	padding: 5px;
 	cursor: pointer;
 	text-align:center;
