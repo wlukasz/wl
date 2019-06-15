@@ -659,27 +659,16 @@ div.formfields {
 					
 						if ( msg.rc == "1" )  {
 							// set google map
-							// var lat = msg.curr.coord.lat;
-							// var lon = msg.curr.coord.lon;
-							var lat = msg.curr.custom.lat;
-							var lon = msg.curr.custom.lon;
+							var lat = msg.coord.lat;
+							var lon = msg.coord.lon;
+							// var lat = msg.curr.custom.lat;
+							// var lon = msg.curr.custom.lon;
 							$( '#cmap' ).html( '<iframe width="100%" height="100%" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/view?zoom=15&center='+lat+','+lon+'&key=<?php echo API_KEY_GOOGLE_MAP_EMBED;?>" ></iframe>' )
 
 							// populate current weather fields
-							$( '#city' ).html( msg.curr.name+', <span style="font-size: 0.7em">'+msg.curr.custom.country_name+'</span> '+'<img src="flags/'+msg.curr.custom.flag+'" alt=""/>' );
-							$( '#dnow' ).html( msg.curr.custom.datetime );
-							$( '#ticn' ).html( '<img src="wicons/temp.png" width="100px" height="100px" alt="">' );
-							$( '#tnow' ).html( msg.curr.custom.temp+'&#176C' );
-							$( '#tmin' ).html( 'Min '+msg.curr.custom.temp_min+'&#176C' );
-							$( '#tmax' ).html( 'Max '+msg.curr.custom.temp_max+'&#176C' );
-							$( '#icon' ).html( '<img src="wicons/'+msg.curr.weather[0].icon+'.png" width="100px" height="100px" alt="">' );
-							$( '#wdsc' ).html( msg.curr.weather[0].description );
-							$( '#phpa' ).html( '<img src="wicons/hpa.png" width="50px" height="50px" alt="">'+msg.curr.main.pressure+' hPa' );
-							$( '#humi' ).html( '<img src="wicons/humi.png" width="50px" height="50px" alt="">'+msg.curr.main.humidity+'%' );
-							$( '#wind' ).html( '<img src="wicons/wind.png" width="50px" height="50px" alt="">'+msg.curr.custom.wind.knots+' knots '+msg.curr.custom.wind.dir );
-							$( '#ccvr' ).html( '<img src="wicons/ccvr.png" width="50px" height="50px" alt="">'+msg.curr.clouds.all+'%' );
-							$( '#sunr' ).html( '<img src="wicons/sunrise.png" width="50px" height="50px" alt="">'+msg.curr.custom.sunrise );
-							$( '#suns' ).html( '<img src="wicons/sunset.png" width="50px" height="50px" alt="">'+msg.curr.custom.sunset );
+							$.each( msg.curr, function( index, value ) {
+									$( '#'+index ).html( value );
+							});
 
 							// populate forecast weather fields
 							for(var i = 0; i < msg.fcst.length; i++) {
@@ -1214,6 +1203,7 @@ div.formfields {
 			<div id="topmenutitle2-menuitem" class="topmenuitems" >
 				<div style="font-size: 1.3em;">Access current weather data for any location on Earth including over 200,000 cities!<br><br>Current weather is frequently updated based on global models and data from more than 40,000 weather stations.<br><br></div>
 				<input type="button" id="weatheraccept" class="userlinks" value="Click to continue" />
+				<span style="display: inline-block;float: right;font-size: 1.0em;padding-top: 20px;">Powered by <a href="https://openweathermap.org" target="_blank">OpenWeatherMap</a></span>
 			</div>
 
 			<div id="topmenutitle3-menuitem" class="topmenuitems" >This item is reserved for future use</div>

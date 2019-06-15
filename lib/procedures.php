@@ -566,9 +566,8 @@ function get_weather_data ( $post ) {
 
 	$return_data = array();
 	$return_data['action'] = $post['action'] ;
-
-	$city_id = $post['cityid'];
-
+    $city_id = $post['cityid'];
+    
 	// forecast
 	$url = 'https://api.openweathermap.org/data/2.5/forecast?id=' . $city_id . '&units=metric&APPID=' . API_KEY_OPEN_WEATHER;
 	if ( !$api_response = file_get_contents( $url ) ) {
@@ -576,35 +575,40 @@ function get_weather_data ( $post ) {
 		$return_data['errmsg'] = 'Could not retrieve forecast data';
 		return $return_data;	
 	}
-	$forecast_list = json_decode($api_response);
-
+    $forecast_list = json_decode( $api_response, true );
+   
     // set up forecast matrix
-	$forecast = $forecast_list->list;
+	$forecast = $forecast_list['list'];
     $fcts_matrix = array();
     $day_no = 0;
     $day = '';    
 
 	foreach ( $forecast as $key => $list ) {
-
         
-        if ( $day != date( 'j', $list->dt ) ) {
+        if ( $day != date( 'j', $list['dt'] ) ) {
             $day_no++;
-            $day = date( 'j', $list->dt );
+            $day = date( 'j', $list['dt'] );
         }
 
-        $fcts_matrix[$key]['hr' . date( 'H', $list->dt )] = date( 'H:00', $list->dt );
-		$fcts_matrix[$key]['day' . $day_no] = date( 'l', $list->dt );
-		
-        $fcts_matrix[$key]['d' . $day_no . date( 'H', $list->dt )] .= '<img src="wicons/'.$list->weather[0]->icon.'.png" width="25px" height="25px">'.'<br>';
-        $fcts_matrix[$key]['d' . $day_no . date( 'H', $list->dt )] .= $list->weather[0]->description.'<br>';
-        $fcts_matrix[$key]['d' . $day_no . date( 'H', $list->dt )] .= '<img src="wicons/temp.png" width="25px" height="25px">'.number_format( $list->main->temp, 1 ).'&#176C<br>';
-        $fcts_matrix[$key]['d' . $day_no . date( 'H', $list->dt )] .= '<img src="wicons/hpa.png" width="25px" height="25px">'.number_format( $list->main->pressure, 1 ).'hPa<br>';
-        $fcts_matrix[$key]['d' . $day_no . date( 'H', $list->dt )] .= '<img src="wicons/humi.png" width="25px" height="25px">'.number_format( $list->main->humidity, 0 ).'%<br>';
-        $fcts_matrix[$key]['d' . $day_no . date( 'H', $list->dt )] .= '<img src="wicons/wind.png" width="25px" height="25px">'.number_format( $list->wind->speed * 3.6 / 1.852 , 1 ).'kt '. convert_wind_direction( $list->wind->deg ) .'<br>';
+        $fcts_matrix[$key]['hr' . date( 'H', $list['dt'] )] = date( 'H:00', $list['dt'] );
+        $fcts_matrix[$key]['day' . $day_no] = date( 'l', $list['dt'] );
+
+        $fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= '<img src="wicons/'.$list['weather'][0]['icon'].'.png">'.'<br>';
+        $fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= $list['weather'][0]['description'].'<br>';
+        $fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= '<img src="wicons/temp.png" width="25px" height="25px">'.number_format( $list['main']['temp'], 1 ).'&#176C<br>';
+        $fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= '<img src="wicons/hpa.png" width="25px" height="25px">'.number_format( $list['main']['pressure'], 1 ).'hPa<br>';
+        $fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= '<img src="wicons/humi.png" width="25px" height="25px">'.number_format( $list['main']['humidity'], 0 ).'%<br>';
+        $fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= '<img src="wicons/wind.png" width="25px" height="25px">'.number_format( $list['wind']['speed'] * 3.6 / 1.852 , 1 ).'kt '. convert_wind_direction( $list->wind->deg ) .'<br>';
     }
     
 	$return_data['fcst'] = $fcts_matrix;
 	
+// $return_data['rc'] = '1';
+// $return_data['errmsg'] = 'Weather Data Retrieved Successfully';
+// return $return_data;
+###################################################################################################
+// END set up forecast matrix    
+
 	//current weather
 	$url = 'https://api.openweathermap.org/data/2.5/weather?id=' . $city_id . '&units=metric&APPID=' . API_KEY_OPEN_WEATHER;
 	if ( !$api_response = file_get_contents( $url ) ) {
@@ -612,49 +616,57 @@ function get_weather_data ( $post ) {
 		$return_data['errmsg'] = 'Could not retrieve current weather data';
 		return $return_data;	
 	}
-	$weather = json_decode($api_response);
-	
-	$weather->custom->datetime = date( 'D, j M Y', $weather->dt );
-	$weather->custom->temp = number_format( $weather->main->temp, 1 );
-	$weather->custom->temp_min = number_format( $weather->main->temp_min , 1 );
-    $weather->custom->temp_max = number_format( $weather->main->temp_max , 1 );
-	$weather->custom->wind->knots = number_format( $weather->wind->speed * 3.6 / 1.852 , 1 ); // m/s->knots
-	$weather->custom->wind->dir = convert_wind_direction( $weather->wind->deg );
-    $weather->custom->sunrise = date( 'G:i', $weather->sys->sunrise );
-    $weather->custom->sunset = date( 'G:i', $weather->sys->sunset );
-	
+	$weather = json_decode($api_response, true);
+    $curr_matrix = array();
+
     # get country name
-    $country_name_result = get_country_name( $weather->sys->country );
+    $country_name_result = get_country_name( $weather['sys']['country'] );
     switch ( $country_name_result['rc'] ) {
         case "1":
-            $weather->custom->country_name = $country_name_result['country_name'];
+            $country_name = $country_name_result['country_name'];
             break;
         case "0":
         case "2":
         default:
-            $weather->custom->country_name = $weather->sys->country;
+            $country_name = $weather['sys']['country'];
     }  
      
     # get country flag
-    $country_flag_result = get_country_flag_plus ( $weather->sys->country );
+    $country_flag_result = get_country_flag_plus ( $weather['sys']['country'] );
     switch ( $country_name_result['rc'] ) {
         case "1":
-            $weather->custom->country_name_lowercase = $country_flag_result['country_name_lowercase'];
-            $weather->custom->flag = $country_flag_result['flag'];
+            $flag = $country_flag_result['flag'];
             break;
         case "0":
         case "2":
         default:
-            $weather->custom->country_name_lowercase = $weather->sys->country;
-            $weather->custom->flag = '';
+            $flag = '';
     }  
+	
+    $sunrise = date( 'G:i', $weather['sys']['sunrise'] );
+    $sunset = date( 'G:i', $weather['sys']['sunset'] );
+	
+    $curr_matrix['city'] = $weather['name'] . ', <span style="font-size: 0.7em">' . $country_name . '</span>' . '<img src="flags/' . $flag . '" alt="">';
+    $curr_matrix['dnow'] = date( 'D, j M Y', $weather['dt'] );
+    $curr_matrix['ticn'] = '<img src="wicons/temp.png" width="100px" height="100px" alt="">';
+    $curr_matrix['tnow'] = number_format( $weather['main']['temp'], 1 ) . '&#176C';
+    $curr_matrix['tmin'] = 'Min ' . number_format( $weather['main']['temp_min'], 1 ) . '&#176C';
+    $curr_matrix['tmax'] = 'Max ' . number_format( $weather['main']['temp_max'], 1 ) . '&#176C';
+    $curr_matrix['icon'] = '<img src="wicons/' . $weather['weather'][0]['icon'] . '.png" width="100px" height="100px" alt="">';
+    $curr_matrix['wdsc'] = $weather['weather'][0]['description'];
+    $curr_matrix['phpa'] = '<img src="wicons/hpa.png" width="50px" height="50px" alt="">' . $weather['main']['pressure'] . ' hPa';
+    $curr_matrix['humi'] = '<img src="wicons/humi.png" width="50px" height="50px" alt="">' . $weather['main']['humidity'] . '%';
+	$curr_matrix['wind'] = '<img src="wicons/wind.png" width="50px" height="50px" alt="">' . number_format( $weather['wind']['speed'] * 3.6 / 1.852 , 1 ) . ' kt ' . convert_wind_direction( $weather['wind']['deg'] ); // m/s->knots
+    $curr_matrix['ccvr'] = '<img src="wicons/ccvr.png" width="50px" height="50px" alt="">' . $weather['clouds']['all'] . '%';
+    $curr_matrix['sunr'] = '<img src="wicons/sunrise.png" width="50px" height="50px" alt="">' . $sunrise;
+    $curr_matrix['suns'] = '<img src="wicons/sunset.png" width="50px" height="50px" alt="">' . $sunset;
+		
+	$return_data['curr'] = $curr_matrix;
 		
 	# get lat & lon
 	$lat_lon_result = get_lat_lon ( $city_id );
-	$weather->custom->lat = $lat_lon_result['result']['lat'];
-	$weather->custom->lon = $lat_lon_result['result']['lon'];
-
-	$return_data['curr'] = $weather;
+	$return_data['coord']['lat'] = $lat_lon_result['result']['lat'];
+	$return_data['coord']['lon'] = $lat_lon_result['result']['lon'];
 	
 	$return_data['rc'] = '1';
 	$return_data['errmsg'] = 'Weather Data Retrieved Successfully';
