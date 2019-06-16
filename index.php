@@ -134,6 +134,8 @@
 } 
 /* end of top level grid definitions */
 
+/* WEAHER Grid Definitions */
+
 /* weather page sub-grid definitions */
 cpik { grid-area: cpik; }
 wnow { grid-area: wnow; }
@@ -242,13 +244,13 @@ tmin { grid-area: tmin; }
 /* end of temp sub-grid definitions */
 
 /* fcst sub-grid definitions */
-hour { grid-area: hour; }
+/* hour { grid-area: hour; }
 day1 { grid-area: day1; }
 day2 { grid-area: day2; }
 day3 { grid-area: day3; }
 day4 { grid-area: day4; }
 day5 { grid-area: day5; }
-day6 { grid-area: day6; }
+day6 { grid-area: day6; } */
 d101 { grid-area: d101; }
 d201 { grid-area: d201; }
 d301 { grid-area: d301; }
@@ -302,7 +304,7 @@ d622 { grid-area: d622; }
 	display: grid;
 	grid-gap: 1px;
 	grid-template-areas: 
-		"hour"
+		/* "hour"
 		"day1" 
 		"day2" 
 		"day3" 
@@ -316,7 +318,7 @@ d622 { grid-area: d622; }
 		"hr13"
 		"hr16"
 		"hr19"
-		"hr22"
+		"hr22" */
 		"d101"
 		"d201"
 		"d301"
@@ -373,7 +375,7 @@ d622 { grid-area: d622; }
 		display: grid;
 		grid-gap: 1px;
 		grid-template-areas:
-		"hour day1 day2 day3 day4 day5 day6"
+		/* "hour day1 day2 day3 day4 day5 day6"
 		"hr01 d101 d201 d301 d401 d501 d601"
 		"hr04 d104 d204 d304 d404 d504 d604"
 		"hr07 d107 d207 d307 d407 d507 d607"
@@ -381,11 +383,22 @@ d622 { grid-area: d622; }
 		"hr13 d113 d213 d313 d413 d513 d613"
 		"hr16 d116 d216 d316 d416 d516 d616"
 		"hr19 d119 d219 d319 d419 d519 d619"
-		"hr22 d122 d222 d322 d422 d522 d622"
+		"hr22 d122 d222 d322 d422 d522 d622" */
+
+		"d101 d201 d301 d401 d501 d601"
+		"d104 d204 d304 d404 d504 d604"
+		"d107 d207 d307 d407 d507 d607"
+		"d110 d210 d310 d410 d510 d610"
+		"d113 d213 d313 d413 d513 d613"
+		"d116 d216 d316 d416 d516 d616"
+		"d119 d219 d319 d419 d519 d619"
+		"d122 d222 d322 d422 d522 d622"
+
 	}
 }
 
 /* end of fcst sub-grid definitions */
+/* End of WEAHER Grid Definitions */
 
 .weather-display {
 	font-family: Arial, Helvetica, sans-serif;
@@ -858,7 +871,7 @@ div.formfields {
 
 							<div class="input-container inlineblock">
 								<span id="findcitybox-label" class="textbox-label" style="color: white;">Find City</span>	
-								<input id="findcitybox" name="findcitybox" class="forminputs" type="text" value="" placeholder="Find city" autocomplete="off" required>
+								<input id="findcitybox" name="findcitybox" class="forminputs" type="text" size="60" value="" placeholder="Find city" autocomplete="off" required>
 							</div>
 							<div class="input-container inlineblock">	
 								<input id="submitfindcity" name="submitfindcity" class="submit-btn" type="submit" style="margin: 0 0 0 0;width: 100%;" value="Display Weather Info" />
@@ -890,10 +903,9 @@ div.formfields {
 							<suns><span id="suns" style="padding: 3px;font-size: 1.0em;float: left;"></span></suns>
 						</div>
 					</wnow>
-					<cmap id="cmap" class="weather-display">
-					</cmap>
+					<cmap id="cmap" class="weather-display"></cmap>
 					<fcst class="fcst-grid weather-display" style="background-color: white;padding: 0;font-size: 0.8em;">
-						<hour id="hour" class="weather-display">Hour</hour>
+						<!-- <hour id="hour" class="weather-display">Hour</hour>
 						<day1 id="day1" class="weather-display">day1</day1>
 						<day2 id="day2" class="weather-display">day2</day2>
 						<day3 id="day3" class="weather-display">day3</day3>
@@ -908,7 +920,7 @@ div.formfields {
 						<hr13 id="hr13" class="weather-display">hr13</hr13>
 						<hr16 id="hr16" class="weather-display">hr16</hr16>
 						<hr19 id="hr19" class="weather-display">hr19</hr19>
-						<hr22 id="hr22" class="weather-display">hr22</hr22>
+						<hr22 id="hr22" class="weather-display">hr22</hr22> -->
 
 						<d101 id="d101" class="weather-display"></d101>
 						<d201 id="d201" class="weather-display"></d201>

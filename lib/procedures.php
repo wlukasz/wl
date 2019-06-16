@@ -576,7 +576,7 @@ function get_weather_data ( $post ) {
 		return $return_data;	
 	}
     $forecast_list = json_decode( $api_response, true );
-   
+  
     // set up forecast matrix
 	$forecast = $forecast_list['list'];
     $fcts_matrix = array();
@@ -593,12 +593,13 @@ function get_weather_data ( $post ) {
         $fcts_matrix[$key]['hr' . date( 'H', $list['dt'] )] = date( 'H:00', $list['dt'] );
         $fcts_matrix[$key]['day' . $day_no] = date( 'l', $list['dt'] );
 
-        $fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= '<img src="wicons/'.$list['weather'][0]['icon'].'.png">'.'<br>';
+        $fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= date( 'l', $list['dt'] ).' '.date( 'H:00', $list['dt'] ).'<br>';
+        $fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= '<img src="wicons/'.$list['weather'][0]['icon'].'.png" width="25px" height="25px">';
         $fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= $list['weather'][0]['description'].'<br>';
         $fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= '<img src="wicons/temp.png" width="25px" height="25px">'.number_format( $list['main']['temp'], 1 ).'&#176C<br>';
         $fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= '<img src="wicons/hpa.png" width="25px" height="25px">'.number_format( $list['main']['pressure'], 1 ).'hPa<br>';
         $fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= '<img src="wicons/humi.png" width="25px" height="25px">'.number_format( $list['main']['humidity'], 0 ).'%<br>';
-        $fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= '<img src="wicons/wind.png" width="25px" height="25px">'.number_format( $list['wind']['speed'] * 3.6 / 1.852 , 1 ).'kt '. convert_wind_direction( $list->wind->deg ) .'<br>';
+        $fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= '<img src="wicons/wind.png" width="25px" height="25px">'.number_format( $list['wind']['speed'] * 3.6 / 1.852 , 1 ).'kt '. convert_wind_direction( $list['wind']['deg'] ) .'<br>';
     }
     
 	$return_data['fcst'] = $fcts_matrix;
