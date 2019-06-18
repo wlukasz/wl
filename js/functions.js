@@ -71,6 +71,9 @@ js/functions.js
 		$( '#'+VisibleContentID ).css( 'display' , 'block' );
 		
 		$( '#homeicon' ).click(  function() { 
+			$( '#cpik' ).fadeOut();
+			$( '#darksky-options' ).fadeOut();
+			$( '#findcitybox' ).val( '' );
 			$( '#'+VisibleContentID ).css( 'display' , 'none' );
 			VisibleContentID = 'homecontents';
 			$( '#'+VisibleContentID ).css( 'display' , 'block' );
@@ -109,7 +112,8 @@ js/functions.js
 		 	 	    	show_menu_items ( clickedMenuTitle );
 		 			}, 300);
 	 	 	    } 
-	 	    }
+			 }
+			 $( '#cpik' ).fadeOut();
 		}); // .topmenutitles click
 
 		$( '#topdropmenu' ).on( "focusout", function() {

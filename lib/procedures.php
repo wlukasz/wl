@@ -521,6 +521,31 @@ function search_weather_city ( $post ) {
 
 } //search_weather_city
 
+function search_weather_lang ( $post ) {
+
+	$return_data = array();
+
+	# get languages matching pattern
+	$sql = "SELECT * FROM tbl_language WHERE language like ?";
+	$params = array( $post['langname'] ); //if no params then must be "array()", otherwise values comma separated
+	$pdo_return_data = pdo_db_call ( __FUNCTION__, 1, '', $sql, $params, 'fetchAll', 2 );
+	if ( $pdo_return_data['rc'] == '1' ) {
+		if ( !$pdo_result = $pdo_return_data['result'] ) { // null returned - no match
+			$return_data['result'] = '';
+			$return_data['rc'] = '2';
+		} else {
+			$return_data['result'] = $pdo_result;
+			$return_data['rc'] = '1';
+		}
+	} else {
+		$return_data['rc'] = '0';
+		$return_data['errmsg'] = 'System Error. Could not retrieve Language ISO Code.';
+	}
+
+	return $return_data;
+
+} // search_weather_lang
+
 function get_country_name ( $country_code ) {
    $sql = "SELECT country FROM tbl_country WHERE a2_iso = ?";
    $params = array( $country_code ); //if no params then must be "array()", otherwise values comma separated
@@ -567,111 +592,121 @@ function get_weather_data ( $post ) {
 	$return_data = array();
 	$return_data['action'] = $post['action'] ;
     $city_id = $post['cityid'];
+
+	if ( $post['source'] == 'openweathermap') {
     
-	// forecast
-	$url = 'https://api.openweathermap.org/data/2.5/forecast?id=' . $city_id . '&units=metric&APPID=' . API_KEY_OPEN_WEATHER;
-	if ( !$api_response = file_get_contents( $url ) ) {
-		$return_data['rc'] = '0';
-		$return_data['errmsg'] = 'Could not retrieve forecast data';
-		return $return_data;	
-	}
-    $forecast_list = json_decode( $api_response, true );
-  
-    // set up forecast matrix
-	$forecast = $forecast_list['list'];
-    $fcts_matrix = array();
-    $day_no = 0;
-    $day = '';    
-
-	foreach ( $forecast as $key => $list ) {
-        
-        if ( $day != date( 'j', $list['dt'] ) ) {
-            $day_no++;
-            $day = date( 'j', $list['dt'] );
-        }
-
-        $fcts_matrix[$key]['hr' . date( 'H', $list['dt'] )] = date( 'H:00', $list['dt'] );
-        $fcts_matrix[$key]['day' . $day_no] = date( 'l', $list['dt'] );
-
-        $fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= date( 'l', $list['dt'] ).' '.date( 'H:00', $list['dt'] ).'<br>';
-        $fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= '<img src="wicons/'.$list['weather'][0]['icon'].'.png" width="25px" height="25px">';
-        $fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= $list['weather'][0]['description'].'<br>';
-        $fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= '<img src="wicons/temp.png" width="25px" height="25px">'.number_format( $list['main']['temp'], 1 ).'&#176C<br>';
-        $fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= '<img src="wicons/hpa.png" width="25px" height="25px">'.number_format( $list['main']['pressure'], 1 ).'hPa<br>';
-        $fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= '<img src="wicons/humi.png" width="25px" height="25px">'.number_format( $list['main']['humidity'], 0 ).'%<br>';
-        $fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= '<img src="wicons/wind.png" width="25px" height="25px">'.number_format( $list['wind']['speed'] * 3.6 / 1.852 , 1 ).'kt '. convert_wind_direction( $list['wind']['deg'] ) .'<br>';
-    }
-    
-	$return_data['fcst'] = $fcts_matrix;
+		// forecast
+		$url = 'https://api.openweathermap.org/data/2.5/forecast?id=' . $city_id . '&units=metric&APPID=' . API_KEY_OPEN_WEATHER;
+		if ( !$api_response = file_get_contents( $url ) ) {
+			$return_data['rc'] = '0';
+			$return_data['errmsg'] = 'Could not retrieve forecast data';
+			return $return_data;	
+		}
+		$forecast_list = json_decode( $api_response, true );
 	
-// $return_data['rc'] = '1';
-// $return_data['errmsg'] = 'Weather Data Retrieved Successfully';
-// return $return_data;
-###################################################################################################
-// END set up forecast matrix    
+		// set up forecast matrix
+		$forecast = $forecast_list['list'];
+		$fcts_matrix = array();
+		$day_no = 0;
+		$day = '';    
 
-	//current weather
-	$url = 'https://api.openweathermap.org/data/2.5/weather?id=' . $city_id . '&units=metric&APPID=' . API_KEY_OPEN_WEATHER;
-	if ( !$api_response = file_get_contents( $url ) ) {
-		$return_data['rc'] = '0';
-		$return_data['errmsg'] = 'Could not retrieve current weather data';
-		return $return_data;	
-	}
-	$weather = json_decode($api_response, true);
-    $curr_matrix = array();
+		foreach ( $forecast as $key => $list ) {
+			
+			if ( $day != date( 'j', $list['dt'] ) ) {
+				$day_no++;
+				$day = date( 'j', $list['dt'] );
+			}
 
-    # get country name
-    $country_name_result = get_country_name( $weather['sys']['country'] );
-    switch ( $country_name_result['rc'] ) {
-        case "1":
-            $country_name = $country_name_result['country_name'];
-            break;
-        case "0":
-        case "2":
-        default:
-            $country_name = $weather['sys']['country'];
-    }  
-     
-    # get country flag
-    $country_flag_result = get_country_flag_plus ( $weather['sys']['country'] );
-    switch ( $country_name_result['rc'] ) {
-        case "1":
-            $flag = $country_flag_result['flag'];
-            break;
-        case "0":
-        case "2":
-        default:
-            $flag = '';
-    }  
-	
-    $sunrise = date( 'G:i', $weather['sys']['sunrise'] );
-    $sunset = date( 'G:i', $weather['sys']['sunset'] );
-	
-    $curr_matrix['city'] = $weather['name'] . ', <span style="font-size: 0.7em">' . $country_name . '</span>' . '<img src="flags/' . $flag . '" alt="">';
-    $curr_matrix['dnow'] = date( 'D, j M Y', $weather['dt'] );
-    $curr_matrix['ticn'] = '<img src="wicons/temp.png" width="100px" height="100px" alt="">';
-    $curr_matrix['tnow'] = number_format( $weather['main']['temp'], 1 ) . '&#176C';
-    $curr_matrix['tmin'] = 'Min ' . number_format( $weather['main']['temp_min'], 1 ) . '&#176C';
-    $curr_matrix['tmax'] = 'Max ' . number_format( $weather['main']['temp_max'], 1 ) . '&#176C';
-    $curr_matrix['icon'] = '<img src="wicons/' . $weather['weather'][0]['icon'] . '.png" width="100px" height="100px" alt="">';
-    $curr_matrix['wdsc'] = $weather['weather'][0]['description'];
-    $curr_matrix['phpa'] = '<img src="wicons/hpa.png" width="50px" height="50px" alt="">' . $weather['main']['pressure'] . ' hPa';
-    $curr_matrix['humi'] = '<img src="wicons/humi.png" width="50px" height="50px" alt="">' . $weather['main']['humidity'] . '%';
-	$curr_matrix['wind'] = '<img src="wicons/wind.png" width="50px" height="50px" alt="">' . number_format( $weather['wind']['speed'] * 3.6 / 1.852 , 1 ) . ' kt ' . convert_wind_direction( $weather['wind']['deg'] ); // m/s->knots
-    $curr_matrix['ccvr'] = '<img src="wicons/ccvr.png" width="50px" height="50px" alt="">' . $weather['clouds']['all'] . '%';
-    $curr_matrix['sunr'] = '<img src="wicons/sunrise.png" width="50px" height="50px" alt="">' . $sunrise;
-    $curr_matrix['suns'] = '<img src="wicons/sunset.png" width="50px" height="50px" alt="">' . $sunset;
+			$fcts_matrix[$key]['hr' . date( 'H', $list['dt'] )] = date( 'H:00', $list['dt'] );
+			$fcts_matrix[$key]['day' . $day_no] = date( 'l', $list['dt'] );
+
+			$fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= date( 'l', $list['dt'] ).' '.date( 'H:00', $list['dt'] ).'<br>';
+			$fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= '<img src="wicons/'.$list['weather'][0]['icon'].'.png" width="25px" height="25px">';
+			$fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= $list['weather'][0]['description'].'<br>';
+			$fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= '<img src="wicons/temp.png" width="25px" height="25px">'.number_format( $list['main']['temp'], 1 ).'&#176C<br>';
+			$fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= '<img src="wicons/hpa.png" width="25px" height="25px">'.number_format( $list['main']['pressure'], 1 ).'hPa<br>';
+			$fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= '<img src="wicons/humi.png" width="25px" height="25px">'.number_format( $list['main']['humidity'], 0 ).'%<br>';
+			$fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= '<img src="wicons/wind.png" width="25px" height="25px">'.number_format( $list['wind']['speed'] * 3.6 / 1.852 , 1 ).'kt '. convert_wind_direction( $list['wind']['deg'] ) .'<br>';
+		}
 		
-	$return_data['curr'] = $curr_matrix;
+		$return_data['fcst'] = $fcts_matrix;
 		
-	# get lat & lon
-	$lat_lon_result = get_lat_lon ( $city_id );
-	$return_data['coord']['lat'] = $lat_lon_result['result']['lat'];
-	$return_data['coord']['lon'] = $lat_lon_result['result']['lon'];
-	
-	$return_data['rc'] = '1';
-	$return_data['errmsg'] = 'Weather Data Retrieved Successfully';
-	return $return_data;
+	// END set up forecast matrix    
+
+		//current weather
+		$url = 'https://api.openweathermap.org/data/2.5/weather?id=' . $city_id . '&units=metric&APPID=' . API_KEY_OPEN_WEATHER;
+		if ( !$api_response = file_get_contents( $url ) ) {
+			$return_data['rc'] = '0';
+			$return_data['errmsg'] = 'Could not retrieve current weather data';
+			return $return_data;	
+		}
+		$weather = json_decode($api_response, true);
+		$curr_matrix = array();
+
+		# get country name
+		$country_name_result = get_country_name( $weather['sys']['country'] );
+		switch ( $country_name_result['rc'] ) {
+			case "1":
+				$country_name = $country_name_result['country_name'];
+				break;
+			case "0":
+			case "2":
+			default:
+				$country_name = $weather['sys']['country'];
+		}  
+		
+		# get country flag
+		$country_flag_result = get_country_flag_plus ( $weather['sys']['country'] );
+		switch ( $country_name_result['rc'] ) {
+			case "1":
+				$flag = $country_flag_result['flag'];
+				break;
+			case "0":
+			case "2":
+			default:
+				$flag = '';
+		}  
+		
+		$sunrise = date( 'G:i', $weather['sys']['sunrise'] );
+		$sunset = date( 'G:i', $weather['sys']['sunset'] );
+		
+		$curr_matrix['city'] = $weather['name'] . ', <span style="font-size: 0.7em">' . $country_name . '</span>' . '<img src="flags/' . $flag . '" alt="">';
+		$curr_matrix['dnow'] = date( 'D, j M Y', $weather['dt'] );
+		$curr_matrix['ticn'] = '<img src="wicons/temp.png" width="100px" height="100px" alt="">';
+		$curr_matrix['tnow'] = number_format( $weather['main']['temp'], 1 ) . '&#176C';
+		$curr_matrix['tmin'] = 'Min ' . number_format( $weather['main']['temp_min'], 1 ) . '&#176C';
+		$curr_matrix['tmax'] = 'Max ' . number_format( $weather['main']['temp_max'], 1 ) . '&#176C';
+		$curr_matrix['icon'] = '<img src="wicons/' . $weather['weather'][0]['icon'] . '.png" width="100px" height="100px" alt="">';
+		$curr_matrix['wdsc'] = $weather['weather'][0]['description'];
+		$curr_matrix['phpa'] = '<img src="wicons/hpa.png" width="50px" height="50px" alt="">' . $weather['main']['pressure'] . ' hPa';
+		$curr_matrix['humi'] = '<img src="wicons/humi.png" width="50px" height="50px" alt="">' . $weather['main']['humidity'] . '%';
+		$curr_matrix['wind'] = '<img src="wicons/wind.png" width="50px" height="50px" alt="">' . number_format( $weather['wind']['speed'] * 3.6 / 1.852 , 1 ) . ' kt ' . convert_wind_direction( $weather['wind']['deg'] ); // m/s->knots
+		$curr_matrix['ccvr'] = '<img src="wicons/ccvr.png" width="50px" height="50px" alt="">' . $weather['clouds']['all'] . '%';
+		$curr_matrix['sunr'] = '<img src="wicons/sunrise.png" width="50px" height="50px" alt="">' . $sunrise;
+		$curr_matrix['suns'] = '<img src="wicons/sunset.png" width="50px" height="50px" alt="">' . $sunset;
+			
+		$return_data['curr'] = $curr_matrix;
+			
+		# get lat & lon
+		$lat_lon_result = get_lat_lon ( $city_id );
+		$return_data['coord']['lat'] = $lat_lon_result['result']['lat'];
+		$return_data['coord']['lon'] = $lat_lon_result['result']['lon'];
+		
+		$return_data['rc'] = '1';
+		$return_data['errmsg'] = 'OpenWeatherMap responded';
+		return $return_data;
+
+	} elseif ( $post['source'] == 'darksky') {
+
+		$return_data['rc'] = '1';
+		$return_data['errmsg'] = 'DarkSky responded...';
+		return $return_data;
+
+	} else {
+		$return_data['rc'] = '0';
+		$return_data['errmsg'] = 'Invalid source';
+		return $return_data;
+	}
 	
 } // get_weather_data
 

@@ -2,4 +2,5 @@ flags/
 test/
 wicons/
 !Changed_in_this_Version.txt
-
+vendor/
+.history

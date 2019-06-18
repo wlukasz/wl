@@ -56,6 +56,9 @@
 			case "searchcity":
 				$return_array = search_weather_city ( $_POST );
 				break;
+			case "searchlang":
+				$return_array = search_weather_lang ( $_POST );
+				break;
 			case "findcity":
 				$return_array = get_weather_data ( $_POST );
 				break;
@@ -134,10 +137,19 @@
 } 
 /* end of top level grid definitions */
 
-/* WEAHER Grid Definitions */
+/* WEATHER Grid Definitions */
+
+/* city search grid definitions */
+cpik { grid-area: cpik; }
+
+.findcity-grid {
+	display: grid;
+	grid-gap: 1px;
+	grid-template-areas: 
+		"cpik"
+}
 
 /* weather page sub-grid definitions */
-cpik { grid-area: cpik; }
 wnow { grid-area: wnow; }
 cmap { grid-area: cmap; }
 fcst { grid-area: fcst; }
@@ -146,7 +158,6 @@ fcst { grid-area: fcst; }
 	display: grid;
 	grid-gap: 1px;
 	grid-template-areas: 
-		"cpik"
 		"wnow"
 		"cmap"
 		"fcst"
@@ -157,7 +168,6 @@ fcst { grid-area: fcst; }
 		display: grid;
 		grid-gap: 1px;
 		grid-template-areas:
-			"cpik cpik cpik cpik cpik cpik cpik" 
 			"wnow wnow wnow cmap cmap cmap cmap"
 			"fcst fcst fcst fcst fcst fcst fcst"
 	}
@@ -244,13 +254,6 @@ tmin { grid-area: tmin; }
 /* end of temp sub-grid definitions */
 
 /* fcst sub-grid definitions */
-/* hour { grid-area: hour; }
-day1 { grid-area: day1; }
-day2 { grid-area: day2; }
-day3 { grid-area: day3; }
-day4 { grid-area: day4; }
-day5 { grid-area: day5; }
-day6 { grid-area: day6; } */
 d101 { grid-area: d101; }
 d201 { grid-area: d201; }
 d301 { grid-area: d301; }
@@ -304,21 +307,6 @@ d622 { grid-area: d622; }
 	display: grid;
 	grid-gap: 1px;
 	grid-template-areas: 
-		/* "hour"
-		"day1" 
-		"day2" 
-		"day3" 
-		"day4" 
-		"day5"
-		"day6"
-		"hr01"
-		"hr04"
-		"hr07"
-		"hr10"
-		"hr13"
-		"hr16"
-		"hr19"
-		"hr22" */
 		"d101"
 		"d201"
 		"d301"
@@ -375,15 +363,6 @@ d622 { grid-area: d622; }
 		display: grid;
 		grid-gap: 1px;
 		grid-template-areas:
-		/* "hour day1 day2 day3 day4 day5 day6"
-		"hr01 d101 d201 d301 d401 d501 d601"
-		"hr04 d104 d204 d304 d404 d504 d604"
-		"hr07 d107 d207 d307 d407 d507 d607"
-		"hr10 d110 d210 d310 d410 d510 d610"
-		"hr13 d113 d213 d313 d413 d513 d613"
-		"hr16 d116 d216 d316 d416 d516 d616"
-		"hr19 d119 d219 d319 d419 d519 d619"
-		"hr22 d122 d222 d322 d422 d522 d622" */
 
 		"d101 d201 d301 d401 d501 d601"
 		"d104 d204 d304 d404 d504 d604"
@@ -458,15 +437,19 @@ div.formfields {
 	
 	var objAntiBot;
 	var objOutput;
+	var strWeatherSource = '';
 		
 	$( document ).ready( function() {
 		// init
 		$( '#submitfindcity' ).hide();
+		$( '#cpik' ).hide();
+		$( '#darksky-options' ).hide();
 		<?php if ( isset( $_COOKIE['session_token'] ) ) { ?>
 			$( '.loggedout' ).hide();
 			get_user_details();
 		<?php } else { ?>
 			$( '.loggedin' ).hide();
+			$( '#cpik' ).hide();
 			$( '#userbizotitle' ).html( "User's Business" );
 			$( '#logo' ).html( "" );
 			$( '#logo' ).css( "background", "url('img/logo.jpg')" );
@@ -565,6 +548,28 @@ div.formfields {
 				$( '#'+VisibleContentID ).css( 'display' , 'block' );
 				$( '.weather-display').hide();
 				$( '#output-findcity').hide();
+				
+				if ( this.id === 'openweathermap-accept' || this.id === 'darksky-accept' ) {
+					$( '#cpik').fadeIn();
+					$( '#darksky-options' ).fadeOut();
+					$( '#findcitybox' ).val( '' );
+					$( '#langbox' ).val( 'English' );
+					strWeatherSource = '';
+					if ( this.id === 'openweathermap-accept' ) {
+						document.getElementById( 'poweredby' ).href = 'https://openweathermap.org';
+						document.getElementById( 'poweredby' ).text = 'OpenWeatherMap';
+						$( '#source').val( 'openweathermap' );
+						strWeatherSource = 'openweathermap';
+					} else if ( this.id === 'darksky-accept' ) {
+						document.getElementById( 'poweredby' ).href = 'https://darksky.net';
+						document.getElementById( 'poweredby' ).text = 'DarkSky API';
+						$( '#source').val( 'darksky' );
+						strWeatherSource = 'darksky';
+					} else {
+						document.getElementById( 'poweredby' ).href = '#';
+						document.getElementById( 'poweredby' ).text = '';
+					}
+				}	
 			}
     	});
 		
@@ -669,35 +674,39 @@ div.formfields {
 				// weather results come here
 					if ( msg.action == "findcity" ) {
 						$( '#submitfindcity' ).fadeOut();
-					
-						if ( msg.rc == "1" )  {
-							// set google map
-							var lat = msg.coord.lat;
-							var lon = msg.coord.lon;
-							// var lat = msg.curr.custom.lat;
-							// var lon = msg.curr.custom.lon;
-							$( '#cmap' ).html( '<iframe width="100%" height="100%" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/view?zoom=15&center='+lat+','+lon+'&key=<?php echo API_KEY_GOOGLE_MAP_EMBED;?>" ></iframe>' )
+						if ( strWeatherSource === 'openweathermap' ) {
+							if ( msg.rc == "1" )  {
+								// set google map
+								var lat = msg.coord.lat;
+								var lon = msg.coord.lon;
+								$( '#cmap' ).html( '<iframe width="100%" height="100%" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/view?zoom=15&center='+lat+','+lon+'&key=<?php echo API_KEY_GOOGLE_MAP_EMBED;?>" ></iframe>' )
 
-							// populate current weather fields
-							$.each( msg.curr, function( index, value ) {
-									$( '#'+index ).html( value );
-							});
-
-							// populate forecast weather fields
-							for(var i = 0; i < msg.fcst.length; i++) {
-								var fcst = msg.fcst[i];
-								$.each( fcst, function( index, value ) {
+								// populate current weather fields
+								$.each( msg.curr, function( index, value ) {
 										$( '#'+index ).html( value );
 								});
-							}
 
-							$( '#'+VisibleContentID ).css( 'display' , 'none' );
-							VisibleContentID = 'weatheraccept-content';
-							$( '#'+VisibleContentID ).css( 'display' , 'block' );
-							$( '.weather-display').fadeIn();
-						} else if  ( msg.rc == "0" )  {
+								// populate forecast weather fields
+								for(var i = 0; i < msg.fcst.length; i++) {
+									var fcst = msg.fcst[i];
+									$.each( fcst, function( index, value ) {
+											$( '#'+index ).html( value );
+									});
+								}
+
+								$( '#'+VisibleContentID ).css( 'display' , 'none' );
+								VisibleContentID = 'openweathermap-accept-content';
+								$( '#'+VisibleContentID ).css( 'display' , 'block' );
+								$( '.weather-display').fadeIn();
+							} else if  ( msg.rc == "0" )  {
+								alert(msg.errmsg);
+							} else {
+								alert(msg.errmsg);
+							}
+						} else if ( strWeatherSource === 'darksky' ) {
+console.log ('DarkSky Weather' );
 						} else {
-							alert(msg.errmsg);
+							alert( 'Invalid weather source detected') ;
 						}
 					}	
 				},
@@ -807,6 +816,7 @@ div.formfields {
 				});  // ### AJAX this is to do database business ###
 			} else {
 				$( '#submitfindcity' ).fadeOut();
+				$( '#citysearchoutput').html( '' );
 			}
 		});
 		
@@ -815,11 +825,62 @@ div.formfields {
 			$( '#cityid-findcity' ).val( this.id );
 			$( '#citysearchoutput').html( '' );
 			$( '#submitfindcity' ).fadeIn();
+			if ( strWeatherSource === 'darksky' ) {
+				$( '#darksky-options' ).fadeIn();
+			}
 		});
 		
 		$( '#findcitybox' ).focusin( function() {
 			$( this ).val( '' );
 			$( '#submitfindcity' ).fadeOut();
+			$( '#darksky-options' ).fadeOut();
+		});
+
+		/* retrieve optional language for weather */
+		$( '#langbox' ).on( 'input', function() {
+			if ( this.value.length > 1 ) {
+
+				var langPattern = this.value+'%';
+				if ( this.value == '' ) {
+					langPattern = '';
+				}
+				var callData = "ajax=<?php echo $_SERVER['PHP_SELF'];?>&action=searchlang&langname="+langPattern;
+				$.ajax({ // ### AJAX this is to do database business ###
+					url:"<?php echo $_SERVER['PHP_SELF'];?>",
+					type:"POST",
+					data : callData,
+					success:function(msg){
+						msg = JSON.parse(msg);
+						if ( msg.rc == "1" ) {
+							var i = 0;
+							var srText = '';
+							for ( i==0; i<msg.result.length; i++ ) {
+								srText += '<span id="'+msg.result[i].lang_iso+'" style="padding: 0 20px 0 10px;" class="matchedlang">'+msg.result[i].language+'</span><br>';
+							}
+							$( '#langsearchoutput').html( srText );
+						} else if ( msg.rc == "2" ) {
+							$( '#langsearchoutput').html( '' );
+						} else if ( msg.rc == "0" ) {
+							alert ( msg.errmsg );
+						}
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						alert("Network Error! "+msg.errmsg);
+					},
+				});  // ### AJAX this is to do database business ###
+			} else {
+				$( '#langsearchoutput').html( '' );
+			}
+		});
+		
+		$( document ).on( 'click touchstart', '.matchedlang', function() {
+			$( '#langbox' ).val( $( this ).text() );
+			$( '#lang' ).val( this.id );
+			$( '#langsearchoutput').html( '' );
+		});
+		
+		$( '#langbox' ).focusin( function() {
+			$( this ).val( '' );
 		});
 		
 	}); // document ready
@@ -858,31 +919,46 @@ div.formfields {
 				</p>
 			</div> <!-- homecontents -->
 
-			<div id="weatheraccept-content" class="contentscontainers">
+					<cpik id="cpik">
+						<div class="findcity-grid" style="background-color: dodgerblue;">
+							<form id="findcity-form" class="user-biznes-form" action="<?php echo $_SERVER['PHP_SELF'];?>" method="post" enctype="multipart/form-data">
+								<span style="float: right;font-family: Arial;font-size: 1.0em;color: white;padding: 3px;">Powered by <a id="poweredby" href="" target="_blank" style="color: white;"></a></span>
+								<input type="hidden" name="antibot" value="" />
+								<input type="hidden" name="ajax" value="<?php echo $_SERVER['PHP_SELF']?>" />
+								<input type="hidden" name="action" value="findcity" />
+								<input type="hidden" id="source" name="source" value="" />
+								<input type="hidden" id="lang" name="lang" value="" />
+								<input type="hidden" id="cityid-findcity" name="cityid" value="" />
+
+								<div class="input-container inlineblock">
+									<span id="findcitybox-label" class="textbox-label" style="color: white;">Find City</span>	
+									<input id="findcitybox" name="findcitybox" class="forminputs" type="text" size="40" value="" placeholder="Find City" autocomplete="off" required>
+								</div>
+								<div id="darksky-options" class="input-container inlineblock">
+									<span id="langbox-label" class="textbox-label" style="color: white;">Select Language</span>	
+									<input id="langbox" name="langbox" class="forminputs" type="text" size="20" value="" placeholder="Language (optional)" autocomplete="off">
+								</div>
+								<div class="input-container inlineblock">	
+									<input id="submitfindcity" name="submitfindcity" class="submit-btn" type="submit" style="margin: 0 0 0 0;width: 100%;" value="Display Weather Info" />
+								</div>
+								<img src="img/ajax-loader.gif" class="loading-img inlineblock" alt="Please Wait..."/>
+								<br>
+								<div id="citysearchoutput" style="display: inline-block;margin-left: 5px;" class="forminputs"></div>
+								<div id="langsearchoutput" style="display: inline-block;margin-left: 5px;" class="forminputs"></div>
+								<br>
+								<output id="output-findcity" name="output" style="font-family: Arial;font-size: 0.7em;background-color: white;border-radius: 3px;padding: 1px;margin-left: 5px;"></output>
+							</form>
+						</div>
+					</cpik>
+
+			<div id="darksky-accept-content" class="contentscontainers">
+			id="darksky-accept-content"
+			</div> <!-- darksky-accept-content -->
+
+			<div id="openweathermap-accept-content" class="contentscontainers">
 
 				<!-- weather-results -->
 				<div id="weather-results" class="weather-grid" style="background-color: white;padding: 0;">
-					<cpik style="background-color: dodgerblue;">
-						<form id="findcity-form" class="user-biznes-form" action="<?php echo $_SERVER['PHP_SELF'];?>" method="post" enctype="multipart/form-data">
-							<input type="hidden" id="antibot-findcity" name="antibot" value="" />
-							<input type="hidden" id="ajax-findcity" name="ajax" value="<?php echo $_SERVER['PHP_SELF']?>" />
-							<input type="hidden" id="action-findcity" name="action" value="findcity" />
-							<input type="hidden" id="cityid-findcity" name="cityid" value="" />
-
-							<div class="input-container inlineblock">
-								<span id="findcitybox-label" class="textbox-label" style="color: white;">Find City</span>	
-								<input id="findcitybox" name="findcitybox" class="forminputs" type="text" size="60" value="" placeholder="Find city" autocomplete="off" required>
-							</div>
-							<div class="input-container inlineblock">	
-								<input id="submitfindcity" name="submitfindcity" class="submit-btn" type="submit" style="margin: 0 0 0 0;width: 100%;" value="Display Weather Info" />
-							</div>
-							<img src="img/ajax-loader.gif" class="loading-img inlineblock" alt="Please Wait..."/>
-							<br>
-							<div id="citysearchoutput" style="margin-left: 5px;" class="forminputs"></div>
-							<br>
-							<output id="output-findcity" name="output" style="font-family: Arial;font-size: 0.7em;background-color: white;border-radius: 3px;padding: 1px;margin-left: 5px;"></output>
-						</form>
-					</cpik>
 					<wnow class="weather-display">
 						<div class="weather-now-grid">
 							<city><span id="city" style="padding: 3px;font-size: 1.8em;"></span></city>
@@ -905,22 +981,6 @@ div.formfields {
 					</wnow>
 					<cmap id="cmap" class="weather-display"></cmap>
 					<fcst class="fcst-grid weather-display" style="background-color: white;padding: 0;font-size: 0.8em;">
-						<!-- <hour id="hour" class="weather-display">Hour</hour>
-						<day1 id="day1" class="weather-display">day1</day1>
-						<day2 id="day2" class="weather-display">day2</day2>
-						<day3 id="day3" class="weather-display">day3</day3>
-						<day4 id="day4" class="weather-display">day4</day4>
-						<day5 id="day5" class="weather-display">day5</day5>
-						<day6 id="day6" class="weather-display">day6</day6>
-
-						<hr01 id="hr01" class="weather-display">hr01</hr01>
-						<hr04 id="hr04" class="weather-display">hr04</hr04>
-						<hr07 id="hr07" class="weather-display">hr07</hr07>
-						<hr10 id="hr10" class="weather-display">hr10</hr10>
-						<hr13 id="hr13" class="weather-display">hr13</hr13>
-						<hr16 id="hr16" class="weather-display">hr16</hr16>
-						<hr19 id="hr19" class="weather-display">hr19</hr19>
-						<hr22 id="hr22" class="weather-display">hr22</hr22> -->
 
 						<d101 id="d101" class="weather-display"></d101>
 						<d201 id="d201" class="weather-display"></d201>
@@ -979,7 +1039,7 @@ div.formfields {
 						<d622 id="d622" class="weather-display"></d622>
 					</fcst>
 				</div><!-- weather-results -->
-			</div> <!-- weatheraccept-content -->
+			</div> <!-- openweathermap-accept-content -->
 
 			<div id="userjoin-content" class="contentscontainers" style="background: url('img/user-join.png');background-size: cover;">
 				<div class="inlineblock"><img src="img/user-join.jpg" alt="Join us..."></div>
@@ -1213,9 +1273,13 @@ div.formfields {
 
 			<!-- Weather API -->
 			<div id="topmenutitle2-menuitem" class="topmenuitems" >
-				<div style="font-size: 1.3em;">Access current weather data for any location on Earth including over 200,000 cities!<br><br>Current weather is frequently updated based on global models and data from more than 40,000 weather stations.<br><br></div>
-				<input type="button" id="weatheraccept" class="userlinks" value="Click to continue" />
-				<span style="display: inline-block;float: right;font-size: 1.0em;padding-top: 20px;">Powered by <a href="https://openweathermap.org" target="_blank">OpenWeatherMap</a></span>
+				<div style="font-size: 1.3em;">Access current weather data for any location on Earth including over 200,000 cities!<br>Current weather is frequently updated based on global models and data from more than 40,000 weather stations.<br>CAUTION: Data accuracy is well below par.<br><br></div>
+				<input type="button" id="openweathermap-accept" class="userlinks" value="Click to continue" />
+				<span style="display: inline-block;font-size: 1.0em;">Powered by <a href="https://openweathermap.org" target="_blank">OpenWeatherMap</a></span>
+				<br><br>
+				<div style="font-size: 1.3em;">Access better weather data from DarkSky.<br><br></div>
+				<input type="button" id="darksky-accept" class="userlinks" value="Click to continue" />
+				<span style="display: inline-block;font-size: 1.0em;">Powered by <a href="https://https://darksky.net" target="_blank">DarkSky API</a></span>
 			</div>
 
 			<div id="topmenutitle3-menuitem" class="topmenuitems" >This item is reserved for future use</div>
