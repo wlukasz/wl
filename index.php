@@ -86,8 +86,8 @@
 	<link rel="shortcut icon" href="favicon.ico" />
     <meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>  -->
-	<?php include("inc/css.inc"); ?>
+ 	<?php include("inc/css.inc"); ?>
+   <link href="https://fonts.googleapis.com/css?family=Raleway:400,300,600,800,900" rel="stylesheet" type="text/css">
 <style>
 
 /* top level grid definitions */
@@ -137,7 +137,7 @@
 } 
 /* end of top level grid definitions */
 
-/* WEATHER Grid Definitions */
+/* OPENWEATHERMAP Grid Definitions */
 
 /* city search grid definitions */
 cpik { grid-area: cpik; }
@@ -377,7 +377,7 @@ d622 { grid-area: d622; }
 }
 
 /* end of fcst sub-grid definitions */
-/* End of WEAHER Grid Definitions */
+/* End of OPENWEATHERMAP Grid Definitions */
 
 .weather-display {
 	font-family: Arial, Helvetica, sans-serif;
@@ -386,6 +386,132 @@ d622 { grid-area: d622; }
 	background-color: dodgerblue;
 	border-radius: 3px;
 	padding: 5px;
+}
+
+/* DarkSky Grid Definitions */
+/*  darksky-grid */
+dscity { grid-area: dscity; }
+dsarch { grid-area: dsarch; }
+dssumm { grid-area: dssumm; }
+dscurr { grid-area: dscurr; }
+dsdly0 { grid-area: dsdly0; }
+dsdly1 { grid-area: dsdly1; }
+dsdly2 { grid-area: dsdly2; }
+dsdly3 { grid-area: dsdly3; }
+dsdly4 { grid-area: dsdly4; }
+dsdly5 { grid-area: dsdly5; }
+dsdly6 { grid-area: dsdly6; }
+dsdly7 { grid-area: dsdly7; }
+
+
+.darksky-grid {
+	display: grid;
+	grid-gap: 1px;
+	grid-template-areas: 
+		"dscity"
+		"dsarch"
+		"dssumm"
+		"dscurr"
+		"dsdly0"
+		"dsdly1"
+		"dsdly2"
+		"dsdly3"
+		"dsdly4"
+		"dsdly5"
+		"dsdly6"
+		"dsdly7"
+}
+
+@media( min-width: 640px ) {
+	.darksky-grid {
+		display: grid;
+		grid-gap: 1px;
+		grid-template-areas:
+		"dscity dscity dscurr dsarch"
+		"dssumm dssumm dscurr dsarch"
+		"dsdly0 dsdly0 dsdly0 dsdly0"
+		"dsdly1 dsdly1 dsdly1 dsdly1"
+		"dsdly2 dsdly2 dsdly2 dsdly2"
+		"dsdly3 dsdly3 dsdly3 dsdly3"
+		"dsdly4 dsdly4 dsdly4 dsdly4"
+		"dsdly5 dsdly5 dsdly5 dsdly5"
+		"dsdly6 dsdly6 dsdly6 dsdly6"
+		"dsdly7 dsdly7 dsdly7 dsdly7"
+	}
+}
+/* End of darksky-grid */
+
+/*  darksky-hourly-grid */
+dsvbar { grid-area: dsvbar; }
+dshr02 { grid-area: dshr02; }
+dshr04 { grid-area: dshr04; }
+dshr06 { grid-area: dshr06; }
+dshr08 { grid-area: dshr08; }
+dshr10 { grid-area: dshr10; }
+dshr12 { grid-area: dshr12; }
+dshr14 { grid-area: dshr14; }
+dshr16 { grid-area: dshr16; }
+dshr18 { grid-area: dshr18; }
+dshr20 { grid-area: dshr20; }
+dshr22 { grid-area: dshr22; }
+dshr24 { grid-area: dshr24; }
+
+.darksky-hourly-grid {
+	display: grid;
+	grid-gap: 1px;
+	grid-template-areas: 
+	"dsvbar"
+	"dshr02"
+	"dshr04"
+	"dshr06"
+	"dshr08"
+	"dshr10"
+	"dshr12"
+	"dshr14"
+	"dshr16"
+	"dshr18"
+	"dshr20"
+	"dshr22"
+	"dshr24"
+}
+
+@media( min-width: 640px ) {
+	.darksky-hourly-grid {
+		display: grid;
+		grid-gap: 1px;
+		grid-template-areas:
+		"dsvbar dshr02 dshr02 dshr02 dshr02 dshr02 dshr02 dshr02"
+		"dsvbar dshr04 dshr04 dshr04 dshr04 dshr04 dshr04 dshr04"
+		"dsvbar dshr06 dshr06 dshr06 dshr06 dshr06 dshr06 dshr06"
+		"dsvbar dshr08 dshr08 dshr08 dshr08 dshr08 dshr08 dshr08"
+		"dsvbar dshr10 dshr10 dshr10 dshr10 dshr10 dshr10 dshr10"
+		"dsvbar dshr12 dshr12 dshr12 dshr12 dshr12 dshr12 dshr12"
+		"dsvbar dshr14 dshr14 dshr14 dshr14 dshr14 dshr14 dshr14"
+		"dsvbar dshr16 dshr16 dshr16 dshr16 dshr16 dshr16 dshr16"
+		"dsvbar dshr18 dshr18 dshr18 dshr18 dshr18 dshr18 dshr18"
+		"dsvbar dshr20 dshr20 dshr20 dshr20 dshr20 dshr20 dshr20"
+		"dsvbar dshr22 dshr22 dshr22 dshr22 dshr22 dshr22 dshr22"
+		"dsvbar dshr24 dshr24 dshr24 dshr24 dshr24 dshr24 dshr24"
+	}
+}
+/* End of darksky-hourly-grid */
+
+/* End of DarkSky Grid Definitions */
+
+.dsdly {
+	margin: 10px 100px 10px 100px;	
+    border-style: solid;
+    border-width: 1px;
+	border-radius: 3px;
+	border-color: dodgerblue;
+}
+
+.dsdly:hover {
+	cursor: pointer;
+}
+
+.hourly {
+	margin: 10px 10px 10px 10px;	
 }
 
 .userlinks:hover {
@@ -410,40 +536,66 @@ div.formfields {
 	color: black;
 }
 
-.matchedcities {
+.matchedcities, .matchedlang {
 	font-family: sans-serif;
 	text-decoration: none; 
 	font-size: 0.8em;
 	color: white;
 }
 
-.matchedcities:hover {
+.matchedcities:hover, .matchedlang:hover {
 	color: dodgerblue;
 	background-color: white;
 	cursor: pointer;
 }
 
-#citysearchoutput {
-	display: inline-block;
+#citysearchoutput, #langsearchoutput {
     border-style: solid;
     border-width: 1px;
 	border-radius: 3px;
 	border-color: lightgrey;
 }
 
+/* ProgressBar definitions */
+#dsarch {
+  width: 306px;
+  height: 153px;
+}
+
+#dsvbarpath {
+  /* width: 100px; */
+  /* height: 400px; */
+}
+
+svg {
+  /* width: 100%;
+  height: 100%; */
+  fill: none;
+  stroke: dodgerblue;
+  stroke-width: 5;
+  stroke-linecap: round;
+  /* -webkit-filter: drop-shadow( -3px -2px 5px gray );
+  filter: drop-shadow( -3px -2px 5px gray ); */
+  }
+/* End of ProgressBar definitions */
+
 </style>
 	<?php include("inc/js.inc"); ?>
+    <script src="js/progressbar.js"></script>
 <script type="text/javascript">
 	
 	var objAntiBot;
 	var objOutput;
 	var strWeatherSource = '';
+	var darkskyData;
 		
 	$( document ).ready( function() {
+
 		// init
 		$( '#submitfindcity' ).hide();
 		$( '#cpik' ).hide();
 		$( '#darksky-options' ).hide();
+		$( '.hourly' ).hide();
 		<?php if ( isset( $_COOKIE['session_token'] ) ) { ?>
 			$( '.loggedout' ).hide();
 			get_user_details();
@@ -505,7 +657,7 @@ div.formfields {
 					break;
 			}
 		<?php } ?>
-		
+
 		$( '.userlinks' ).on( 'click', function() {
 			slide_up_topmenu ();
 			menuToggledBy = 'dummymenuToggledBy';
@@ -548,12 +700,13 @@ div.formfields {
 				$( '#'+VisibleContentID ).css( 'display' , 'block' );
 				$( '.weather-display').hide();
 				$( '#output-findcity').hide();
+				$( '#darksky-results').hide();
 				
 				if ( this.id === 'openweathermap-accept' || this.id === 'darksky-accept' ) {
 					$( '#cpik').fadeIn();
 					$( '#darksky-options' ).fadeOut();
 					$( '#findcitybox' ).val( '' );
-					$( '#langbox' ).val( 'English' );
+					$( '#langbox' ).val( '' );
 					strWeatherSource = '';
 					if ( this.id === 'openweathermap-accept' ) {
 						document.getElementById( 'poweredby' ).href = 'https://openweathermap.org';
@@ -673,6 +826,7 @@ div.formfields {
 					
 				// weather results come here
 					if ( msg.action == "findcity" ) {
+						$( '#lang' ).val( '' );
 						$( '#submitfindcity' ).fadeOut();
 						if ( strWeatherSource === 'openweathermap' ) {
 							if ( msg.rc == "1" )  {
@@ -690,7 +844,7 @@ div.formfields {
 								for(var i = 0; i < msg.fcst.length; i++) {
 									var fcst = msg.fcst[i];
 									$.each( fcst, function( index, value ) {
-											$( '#'+index ).html( value );
+										$( '#'+index ).html( value );
 									});
 								}
 
@@ -703,8 +857,76 @@ div.formfields {
 							} else {
 								alert(msg.errmsg);
 							}
+// ##############################
+// DarkSky Weather populate HERE:
+// ##############################
 						} else if ( strWeatherSource === 'darksky' ) {
-console.log ('DarkSky Weather' );
+							if ( msg.rc == "1" )  {
+								darkskyData = msg.data;
+								$( '#dsarch' ).html( '' ); // clear arch container or it writes over itself on repeated searches
+
+								// populate common weather fields
+								$.each( darkskyData.common, function( index, value ) {
+									$( '#'+index ).html( value );
+								});
+
+
+// ProgressBar.js definitions 
+// SemiCircle
+		var bar = new ProgressBar.SemiCircle(dsarch, {
+            strokeWidth: 10,
+            color: 'dodgerblue',
+            trailColor: '#eee',
+            trailWidth: 10,
+            easing: 'linear',
+            // easing: 'easeInOut',
+            duration: 50000,
+            svgStyle: null,
+            text: {
+                value: '',
+                alignToBottom: true
+            },
+    
+            // Set default step function for all animate calls
+            step: (state, bar) => {
+                bar.path.setAttribute('stroke', state.color);
+				var archText = 'Now,<br>'+darkskyData.archdata[0].ddd+', '+darkskyData.archdata[0].hour+'<br>Feels like '+darkskyData.archdata[0].temp+'&#176C';
+
+                for ( var i=0; i<darkskyData.archdata.length; i++ ) {
+                    if ( i === Math.floor( bar.value() * 100 / (100 / 24) ) ) { // convert bar progress to hours
+                        archText = darkskyData.archdata[i].ddd+', '+darkskyData.archdata[i].hour+'<br>'+darkskyData.archdata[i].temp+'&#176C';
+                        break;
+                    }
+                }
+
+				bar.setText( archText );
+                bar.text.style.color = state.color;
+                // bar.text.style.color = 'black';
+            } // step
+        }); // new Progressbar
+
+        bar.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
+        bar.text.style.fontSize = '1.4rem';
+
+// End of ProgressBar.js definitions 
+
+		bar.animate( 1 );  // Number from 0.0 to 1.0
+
+								// populate daily summaries
+								$.each( darkskyData.daily, function( index, value ) {
+									$( '#'+index ).html( value );
+								});
+
+								$( '#'+VisibleContentID ).css( 'display' , 'none' );
+								VisibleContentID = 'darksky-accept-content';
+								$( '#'+VisibleContentID ).css( 'display' , 'block' );
+								$( '#darksky-results').fadeIn();
+								$( '#darksky-options').hide();
+							} else if  ( msg.rc == "0" )  {
+								alert(msg.errmsg);
+							} else {
+								alert(msg.errmsg);
+							}
 						} else {
 							alert( 'Invalid weather source detected') ;
 						}
@@ -834,6 +1056,8 @@ console.log ('DarkSky Weather' );
 			$( this ).val( '' );
 			$( '#submitfindcity' ).fadeOut();
 			$( '#darksky-options' ).fadeOut();
+			$( '#langsearchoutput').html( '' );
+			$( '#langbox').val( '' );
 		});
 
 		/* retrieve optional language for weather */
@@ -855,7 +1079,7 @@ console.log ('DarkSky Weather' );
 							var i = 0;
 							var srText = '';
 							for ( i==0; i<msg.result.length; i++ ) {
-								srText += '<span id="'+msg.result[i].lang_iso+'" style="padding: 0 20px 0 10px;" class="matchedlang">'+msg.result[i].language+'</span><br>';
+								srText += '<span id="'+msg.result[i].lang_iso+'" style="padding: 0 20px 0 5px;" class="matchedlang">'+msg.result[i].language+'</span><br>';
 							}
 							$( '#langsearchoutput').html( srText );
 						} else if ( msg.rc == "2" ) {
@@ -883,6 +1107,119 @@ console.log ('DarkSky Weather' );
 			$( this ).val( '' );
 		});
 		
+		$( '#langbox' ).focusin( function() {
+			$( this ).val( '' );
+		});
+		
+		$( document ).on( 'click touchstart', '.dsdly', function() {
+		// $( document ).on( 'click touchstart', '.togglehourly', function() {
+			var loopCount = $( this ).attr( 'value' );
+			$( '.hourly' ).each( function() {
+				if ( $( this ).attr( 'value' ) === loopCount ) {
+					$( this ).fadeToggle( 'slow' );
+				} else {
+					$( this ).hide( 'slow' );
+				}
+			});
+
+			$( '.togglehourly' ).each( function() {
+				if ( $( this ).attr( 'value' ) === loopCount ) {
+					if ( $( this ).html() === 'more...' ) {
+						$( this ).html( 'less...' );
+						var hourly_items_count = populate_hourly_grid ( darkskyData, loopCount );
+						$( '.dshr' ).hide();
+						run_vbar_and_show( hourly_items_count );
+					} else {
+						$( this ).html( 'more...' );
+					}
+				} else {
+					$( this ).html( 'more...' );
+				}
+			});
+		});
+
+function populate_hourly_grid ( darkskyData, loopCount ) {
+	var hourlyHtml = '';
+	var hourly_items_count = 0;
+
+	$( '.hourly' ).each( function() {
+		var hourlyID = this.id;
+		$( this ).html( '' );
+
+		$.each( darkskyData.hourly, function( index, value ) {
+			if ( $( '#'+hourlyID ).attr( 'value' ) == loopCount && value.value_attr == loopCount ) {
+				hourlyHtml += value.html;
+				hourly_items_count++;
+			}
+		});
+
+		if ( hourlyHtml.length > 0 ) {
+			$( this ).html( '<dsvbar id="dsvbar" width="5px"><div id="dsvbarpath"></div></dsvbar>'+hourlyHtml );
+		} else {
+			$( this ).html( 'Hourly data unavailable' );
+		}
+		hourlyHtml = '';
+	});
+
+	return hourly_items_count;
+
+} // populate_hourly_grid
+
+function run_vbar_and_show( hourly_items_count ) {
+// ProgressBar.js definitions 
+// Line
+	if (typeof dsvbarpath != "undefined") { // only run bar if hourly data exists
+		var vbar = new ProgressBar.Line(dsvbarpath, {
+			strokeWidth: 10,
+			color: 'dodgerblue',
+			trailColor: '#eee',
+			trailWidth: 10,
+			easing: 'linear',
+			// easing: 'easeInOut',
+			duration: 10000,
+			// svgStyle: null,
+			svgStyle: {
+				transform: 'rotate(90deg)'
+			},
+			text: {
+				value: '',
+				alignToBottom: true
+			},
+
+			// Set default step function for all animate calls
+			step: (state, vbar) => {
+				vbar.path.setAttribute('stroke', 'dodgerblue');
+				// var value = Math.round(vbar.value() * 100); // this would show percent
+				var tempi;
+				for ( var i=1; i<=hourly_items_count; i++ ) {
+					if ( i === Math.floor( vbar.value() * 100 / (100 / hourly_items_count) ) ) {
+						var temps = i * 2;
+						var tempStr = temps.toString();
+						tempi = tempStr.padStart(2, '0');
+						break;
+					// } else {
+					// 	tempi = 12;
+					}
+				}
+				$( '#dshr'+tempi).fadeIn( 'slow' );
+				// if (tempi === 0) {
+				// 	vbar.setText('');
+				// } else {
+				// 	vbar.setText( tempi );
+				// }
+
+				// vbar.text.style.color = state.color;
+				// vbar.text.style.color = 'black';
+			} // step
+		}); // new Progressbar
+		// vbar.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
+		// vbar.text.style.fontSize = '1.0rem';
+
+		vbar.animate( 1 );  // Number from 0.0 to 1.0
+	} // if (typeof dsvbarpath != "undefined")
+
+} // run_vbar_and_show
+
 	}); // document ready
 	
 </script>
@@ -913,16 +1250,17 @@ console.log ('DarkSky Weather' );
 		<!-- main contents container - hidden divs - shown dynamically by javascript -->
 		<div id="maincontentscontainer" class="mainbodycontainers">
 			
-			<div id="homecontents" class="contentscontainers">
-				<p>
-					Skip to main content Australian Government - Bureau of Meteorology Search Enter search terms HOMEABOUTMEDIACONTACTS NSW NSW Weather &amp; Warnings Warnings Summary Forecasts Sydney Forecast NSW Forecast Area Map Observations Sydney Observations All NSW Observations Rainfall &amp; River Conditions
-				</p>
+			<div id="homecontents" class="contentscontainers" style="font-family:'Raleway', Helvetica, sans-serif";>
+				<div style="margin: 20px 50px 0px 50px;">
+					<p>This is an experimental project. Its primary purpose is to keep my sanity intact. I think I'm successful in that.</p>
+					<p>Beginnings go back to 2018 and I add sections as ideas come to mind. Don't hold your breath for anything "Wow!" but some sections might be useful.</p>
+				</div>
 			</div> <!-- homecontents -->
 
 					<cpik id="cpik">
 						<div class="findcity-grid" style="background-color: dodgerblue;">
 							<form id="findcity-form" class="user-biznes-form" action="<?php echo $_SERVER['PHP_SELF'];?>" method="post" enctype="multipart/form-data">
-								<span style="float: right;font-family: Arial;font-size: 1.0em;color: white;padding: 3px;">Powered by <a id="poweredby" href="" target="_blank" style="color: white;"></a></span>
+								<output id="output-findcity" name="output" style="float: right;font-family: Arial;font-size: 0.7em;background-color: white;border-radius: 0 0 3px 3px;padding: 5px;"></output>
 								<input type="hidden" name="antibot" value="" />
 								<input type="hidden" name="ajax" value="<?php echo $_SERVER['PHP_SELF']?>" />
 								<input type="hidden" name="action" value="findcity" />
@@ -932,27 +1270,71 @@ console.log ('DarkSky Weather' );
 
 								<div class="input-container inlineblock">
 									<span id="findcitybox-label" class="textbox-label" style="color: white;">Find City</span>	
-									<input id="findcitybox" name="findcitybox" class="forminputs" type="text" size="40" value="" placeholder="Find City" autocomplete="off" required>
+									<input id="findcitybox" name="findcitybox" class="forminputs" type="text" size="40" value="" title="Type city and it will show in a list below. Click on city of your choice." placeholder="Find City" autocomplete="off" required>
 								</div>
 								<div id="darksky-options" class="input-container inlineblock">
 									<span id="langbox-label" class="textbox-label" style="color: white;">Select Language</span>	
-									<input id="langbox" name="langbox" class="forminputs" type="text" size="20" value="" placeholder="Language (optional)" autocomplete="off">
+									<input id="langbox" name="langbox" class="forminputs" type="text" size="20" value="" title="Type language name, it will show in box below. If not showing, laguage is unavailable, it will default to English. Weather summaries will show in chosen language, all other labels are in English" placeholder="Language (optional)" autocomplete="off">
 								</div>
 								<div class="input-container inlineblock">	
 									<input id="submitfindcity" name="submitfindcity" class="submit-btn" type="submit" style="margin: 0 0 0 0;width: 100%;" value="Display Weather Info" />
 								</div>
 								<img src="img/ajax-loader.gif" class="loading-img inlineblock" alt="Please Wait..."/>
 								<br>
-								<div id="citysearchoutput" style="display: inline-block;margin-left: 5px;" class="forminputs"></div>
-								<div id="langsearchoutput" style="display: inline-block;margin-left: 5px;" class="forminputs"></div>
-								<br>
-								<output id="output-findcity" name="output" style="font-family: Arial;font-size: 0.7em;background-color: white;border-radius: 3px;padding: 1px;margin-left: 5px;"></output>
+								<div id="citysearchoutput" style="display: inline-block;margin-left: 5px;color: white;" class="forminputs"></div>
+								<div id="langsearchoutput" style="display: inline-block;margin-left: 300px;color: white;" class="forminputs"></div>
+								<span style="float: right;font-family: Arial;font-size: 0.8em;color: white;padding: 3px;">Powered by <a id="poweredby" href="" target="_blank" style="color: white;"></a></span>
 							</form>
 						</div>
 					</cpik>
 
-			<div id="darksky-accept-content" class="contentscontainers">
-			id="darksky-accept-content"
+			<div id="darksky-accept-content" class="contentscontainers" style="font-family: Raleway, Helvetica, sans-serif;padding: 3px;">
+				<div id="darksky-results" class="darksky-grid" style="background-color: white;padding: 0;">
+					<dscity id="dscity"></dscity>
+					<dsarch id="dsarch"></dsarch>
+					<dssumm id="dssumm" style="text-align: center;font-size: 1.3em;padding: 3px 5px 3px 5px;"></dssumm>
+					<dscurr id="dscurr" style="text-align: right;font-size: 0.8em;padding: 0 10px 0 0"></dscurr>
+					<dsdly0 id="dsdly0" class="dsdly" value="0">
+						<span id="dlysum0" value="0"></span>
+						<div id="byhour0" class="darksky-hourly-grid hourly" value="0">
+						</div>
+					</dsdly0>
+					<dsdly1 id="dsdly1" class="dsdly" value="1">
+						<span id="dlysum1" value="1"></span>
+						<div id="byhour1" class="darksky-hourly-grid hourly" value="1">
+						</div>
+					</dsdly1>
+					<dsdly2 id="dsdly2" class="dsdly" value="2">
+						<span id="dlysum2" value="2"></span>
+						<div id="byhour2" class="darksky-hourly-grid hourly" value="2">
+						</div>
+					</dsdly2>
+					<dsdly3 id="dsdly3" class="dsdly" value="3">
+						<span id="dlysum3" value="3"></span>
+						<div id="byhour3" class="darksky-hourly-grid hourly" value="3">
+						</div>
+					</dsdly3>
+					<dsdly4 id="dsdly4" class="dsdly" value="4">
+						<span id="dlysum4" value="4"></span>
+						<div id="byhour4" class="darksky-hourly-grid hourly" value="4">
+						</div>
+					</dsdly4>
+					<dsdly5 id="dsdly5" class="dsdly" value="5">
+						<span id="dlysum5" value="5"></span>
+						<div id="byhour5" class="darksky-hourly-grid hourly" value="5">
+						</div>
+					</dsdly5>
+					<dsdly6 id="dsdly6" class="dsdly" value="6">
+						<span id="dlysum6" value="6"></span>
+						<div id="byhour6" class="darksky-hourly-grid hourly" value="6">
+						</div>
+					</dsdly6>
+					<dsdly7 id="dsdly7" class="dsdly" value="7">
+						<span id="dlysum7" value="7"></span>
+						<div id="byhour7" class="darksky-hourly-grid hourly" value="7">
+						</div>
+					</dsdly7>
+				</div>
 			</div> <!-- darksky-accept-content -->
 
 			<div id="openweathermap-accept-content" class="contentscontainers">
@@ -1261,7 +1643,7 @@ console.log ('DarkSky Weather' );
 		<div id="rightpaneforads" class="mainbodycontainers floatright">
 		AdHereAdHereAdHereAdHereAdHereAdHereAdHere
 		</div>
-		<div class="divtopmenuicons" style="margin-top: 50px;">This is Page Footer</div>
+		<div class="divtopmenuicons" style="margin-top: 50px;">This is Page Footer. I'm not sure what to put in here so it stays as is..</div>
 	</div> 
      	
 	<!-- top drop menu items container - populated dynamically by javascript -->
@@ -1273,12 +1655,11 @@ console.log ('DarkSky Weather' );
 
 			<!-- Weather API -->
 			<div id="topmenutitle2-menuitem" class="topmenuitems" >
-				<div style="font-size: 1.3em;">Access current weather data for any location on Earth including over 200,000 cities!<br>Current weather is frequently updated based on global models and data from more than 40,000 weather stations.<br>CAUTION: Data accuracy is well below par.<br><br></div>
-				<input type="button" id="openweathermap-accept" class="userlinks" value="Click to continue" />
+				<div style="font-size: 1.0em;">This section is a result of my learning APIs in general and particularly weather APIs. I've made two separate implementations, OpenWeatherMap and DarkSky. I prefer the latter. You can access current weather and forecast data for any location on Earth including over 200,000 cities!<br>Current weather is frequently updated based on global models and data from more than 40,000 weather stations.<br><br></div>
+				<input type="button" id="openweathermap-accept" class="userlinks" style="width: 200px;font-size: 1em;" value="Click for Open Weather Map" />
 				<span style="display: inline-block;font-size: 1.0em;">Powered by <a href="https://openweathermap.org" target="_blank">OpenWeatherMap</a></span>
 				<br><br>
-				<div style="font-size: 1.3em;">Access better weather data from DarkSky.<br><br></div>
-				<input type="button" id="darksky-accept" class="userlinks" value="Click to continue" />
+				<input type="button" id="darksky-accept" class="userlinks" style="width: 200px;font-size: 1em;" value="Click for Dark Sky" />
 				<span style="display: inline-block;font-size: 1.0em;">Powered by <a href="https://https://darksky.net" target="_blank">DarkSky API</a></span>
 			</div>
 

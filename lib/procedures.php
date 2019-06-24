@@ -593,6 +593,7 @@ function get_weather_data ( $post ) {
 	$return_data['action'] = $post['action'] ;
     $city_id = $post['cityid'];
 
+// OpenWeatherMap
 	if ( $post['source'] == 'openweathermap') {
     
 		// forecast
@@ -603,7 +604,10 @@ function get_weather_data ( $post ) {
 			return $return_data;	
 		}
 		$forecast_list = json_decode( $api_response, true );
-	
+
+		//get timezone offset
+		$tz_offset = $forecast_list['city']['timezone'];
+
 		// set up forecast matrix
 		$forecast = $forecast_list['list'];
 		$fcts_matrix = array();
@@ -612,15 +616,19 @@ function get_weather_data ( $post ) {
 
 		foreach ( $forecast as $key => $list ) {
 			
-			if ( $day != date( 'j', $list['dt'] ) ) {
+			if ( $day != date( 'j', $list['dt'] + $tz_offset ) ) {
+				// var_dump( 'UTC: '.date( 'd M Y H:i', $list['dt'] ) );        
+				// var_dump( 'day UTC: '.date( 'j', $list['dt'] ) );        
+				// var_dump( 'day OFF: '.date( 'j', $list['dt'] + $tz_offset ) );
+				// var_dump( '--------------------------');        
 				$day_no++;
-				$day = date( 'j', $list['dt'] );
+				$day = date( 'j', $list['dt'] + $tz_offset );
 			}
-
+	
 			$fcts_matrix[$key]['hr' . date( 'H', $list['dt'] )] = date( 'H:00', $list['dt'] );
 			$fcts_matrix[$key]['day' . $day_no] = date( 'l', $list['dt'] );
-
-			$fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= date( 'l', $list['dt'] ).' '.date( 'H:00', $list['dt'] ).'<br>';
+				
+			$fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= date( 'l', $list['dt'] + $tz_offset ).' '.date( 'H:00', $list['dt'] + $tz_offset ).'<br>';
 			$fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= '<img src="wicons/'.$list['weather'][0]['icon'].'.png" width="25px" height="25px">';
 			$fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= $list['weather'][0]['description'].'<br>';
 			$fcts_matrix[$key]['d' . $day_no . date( 'H', $list['dt'] )] .= '<img src="wicons/temp.png" width="25px" height="25px">'.number_format( $list['main']['temp'], 1 ).'&#176C<br>';
@@ -631,7 +639,11 @@ function get_weather_data ( $post ) {
 		
 		$return_data['fcst'] = $fcts_matrix;
 		
-	// END set up forecast matrix    
+// $return_data['rc'] = '1';
+// $return_data['errmsg'] = 'Weather Data Retrieved Successfully';
+// return $return_data;
+###################################################################################################
+// END set up forecast matrix    
 
 		//current weather
 		$url = 'https://api.openweathermap.org/data/2.5/weather?id=' . $city_id . '&units=metric&APPID=' . API_KEY_OPEN_WEATHER;
@@ -642,6 +654,11 @@ function get_weather_data ( $post ) {
 		}
 		$weather = json_decode($api_response, true);
 		$curr_matrix = array();
+
+		//set timezone
+		$tz = timezone_name_from_abbr( '', $tz_offset, 0 );
+		$local_timezone = date_default_timezone_get() ;
+		date_default_timezone_set( $tz );
 
 		# get country name
 		$country_name_result = get_country_name( $weather['sys']['country'] );
@@ -691,17 +708,174 @@ function get_weather_data ( $post ) {
 		$lat_lon_result = get_lat_lon ( $city_id );
 		$return_data['coord']['lat'] = $lat_lon_result['result']['lat'];
 		$return_data['coord']['lon'] = $lat_lon_result['result']['lon'];
-		
-		$return_data['rc'] = '1';
-		$return_data['errmsg'] = 'OpenWeatherMap responded';
-		return $return_data;
 
+		// reset timezone
+		date_default_timezone_set( $local_timezone );
+
+		$return_data['rc'] = '1';
+		$return_data['errmsg'] = 'Weather Data Retrieved Successfully';
+		return $return_data;
+// END of OpenWeatherMap
+
+// DarkSky API		
 	} elseif ( $post['source'] == 'darksky') {
+
+		# get lat, lon, city name & couuntry code
+		if ( $city = get_lat_lon( $city_id ) ) {
+			if ( $city['rc'] == '1' ) {
+				$lat = $city['result']['lat'];
+				$lon = $city['result']['lon'];
+				$city_name = $city['result']['name'];
+				$country_code = $city['result']['country'];
+			} else {   
+				$return_data['rc'] = $city['rc'];
+				$return_data['errmsg'] = 'Lat & Lon unavailable';
+				return $return_data;
+			}
+		} else {
+			$return_data['rc'] = '0';
+			$return_data['errmsg'] = 'Failed to get lat & lon';
+			return $return_data;
+		}
+	
+		# get country name
+		$country_name_result = get_country_name( $country_code );
+		switch ( $country_name_result['rc'] ) {
+			case "1":
+			$country_name = $country_name_result['country_name'];
+				break;
+			case "0":
+			case "2":
+			default:
+			$country_name  = $country_code;
+		}  
+			
+		# get country flag
+		$country_flag_result = get_country_flag_plus ( $country_code );
+		switch ( $country_name_result['rc'] ) {
+			case "1":
+				$flag = $country_flag_result['flag'];
+				break;
+			case "0":
+			case "2":
+			default:
+				$flag = '';
+		}
+
+		$lang = !isset( $post['lang'] ) || strlen( $post['lang'] ) != 2 ? '&lang=en' : '&lang=' . $post['lang'];
+    
+		$url = 'https://api.darksky.net/forecast/' . API_KEY_DARKSKY . '/' . $lat . ',' . $lon . '?exclude=minutely,alerts&units=si' . $lang ;
+		$api_response = file_get_contents( $url );
+		if ( !$data = json_decode( $api_response ) ) {
+			$return_data['rc'] = '0';
+			$return_data['errmsg'] = 'DarkSky API failure';
+			return $return_data;
+		}
+
+////////////////////////////////////////////////////
+
+	$local_timezone = date_default_timezone_get() ;
+	date_default_timezone_set( $data->timezone );
+
+	$return_data['data']['coords']['lat'] = $lat;
+	$return_data['data']['coords']['lon'] = $lon;
+	$return_data['data']['common']['dscity'] = '<span style="font-size: 2.0em">' . $city_name. ', <span style="font-size: 0.7em">' . $country_name . '</span>' . '<span><img src="flags/' . $flag . '" alt=""  style="border-style: solid;border-width: 1px;border-radius: 0px;border-color: lightgrey;"></span></span><br><span style="font-size: 0.7em">Local time is ' . date( 'D, ga', $data->currently->time ) . '</span>';
+	$return_data['data']['common']['dssumm'] = $data->daily->summary;
+	$return_data['data']['common']['dscurr'] = 'Now<br>' .
+	'Temperature <span style="font-size: 1.4em;color: dodgerblue;">' . number_format( $data->currently->temperature, 0 ) . '</span>&#176C<br>' .
+	'Pressure <span style="font-size: 1.4em;color: dodgerblue;">' . number_format( $data->currently->pressure, 0 ) . '</span>hPa<br>' .
+	'Humidity <span style="font-size: 1.4em;color: dodgerblue;">' . number_format( $data->currently->humidity * 100, 0 ) . '</span>%<br>' .
+	'Wind <span style="font-size: 1.4em;color: dodgerblue;">' . number_format( $data->currently->windSpeed, 1 ) . '</span>m/s, ' . convert_wind_direction( $data->currently->windBearing ) . '<br>' .
+	'Gusting <span style="font-size: 1.4em;color: dodgerblue;">' . number_format( $data->currently->windGust, 1 ) . '</span>m/s<br>' .
+	'Cloud cover <span style="font-size: 1.4em;color: dodgerblue;">' . number_format( $data->currently->cloudCover * 100, 0 ) . '</span>%<br>' .
+	'Visibility <span style="font-size: 1.4em;color: dodgerblue;">' . number_format( $data->currently->visibility, 1 ) . '</span>km';
+
+	//arch array data
+	foreach ( $data->hourly->data as $key => $value ) {
+		if ( $key > 23 ) break;
+		
+		$return_data['data']['archdata'][$key]['ddd'] = date( 'D', $value->time );
+		$return_data['data']['archdata'][$key]['hour'] = date( 'ga', $value->time );
+		$return_data['data']['archdata'][$key]['temp'] = number_format( $value->apparentTemperature, 0 );
+	}
+
+    //daily summaries
+    foreach ( $data->daily->data as $key => $value ) {
+		$return_data['data']['daily']['dlysum'.$key] = 
+		'<span style="padding: 5px;font-size: 0.8em;">' .
+		'<span style="font-size: 1.5em;">' . date( 'l', $value->time ) . '</span>' . 
+		'<span style="padding-left: 180px;">' .
+		'Sunrise <span style="font-size: 1.4em;color: dodgerblue;">' . date( 'g:ia', $value->sunriseTime ) . '</span>' .
+		' | Sunset <span style="font-size: 1.4em;color: dodgerblue;">' . date( 'g:ia', $value->sunsetTime ) . '</span>' .
+		'</span>' .
+		'<span style="padding: 5px;cursor: pointer;float: right;" class="togglehourly" value="' . $key . '">more...</span><br>' .
+		'<span style="display: block;padding: 15px 15px 0px 15px;">' .$value->summary . '</span>' .
+		'<span style="display: block;padding: 10px 15px 0px 15px;">' .
+		'Low Temperature <span style="font-size: 1.4em;color: dodgerblue;">' . number_format( $value->temperatureLow, 0 ) . '</span>&#176C (' . date( 'g a', $value->temperatureLowTime ) . ') | ' .
+		'High Temperature <span style="font-size: 1.4em;color: dodgerblue;">' . number_format( $value->temperatureHigh, 0 ) . '</span>&#176C (' . date( 'g a', $value->temperatureHighTime ) . ') | ' .
+		'Pressure <span style="font-size: 1.4em;color: dodgerblue;">' . number_format( $value->pressure, 0 ) . '</span>hPa | ' .
+		'Humidity <span style="font-size: 1.4em;color: dodgerblue;">' . number_format( $value->humidity * 100, 0 ) . '</span>% | ' .
+		'Wind <span style="font-size: 1.4em;color: dodgerblue;">' . number_format( $value->windSpeed, 1 ) . '</span>m/s, ' . convert_wind_direction( $value->windBearing ) . ' | ' .
+		'Gusting <span style="font-size: 1.4em;color: dodgerblue;">' . number_format( $value->windGust, 1 ) . '</span>m/s | ' .
+		'Cloud cover <span style="font-size: 1.4em;color: dodgerblue;">' . number_format( $value->cloudCover * 100, 0 ) . '</span>% | ' .
+		'Visibility <span style="font-size: 1.4em;color: dodgerblue;">' . number_format( $value->visibility, 1 ) . '</span>km | ' .
+		'UV Index <span style="font-size: 1.4em;color: dodgerblue;">' . number_format( $value->uvIndex, 0 ) . '</span> (' . date( 'g a', $value->uvIndexTime ) . ')' .
+		'</span';
+		'</span';
+    }
+
+    //hourly array data
+    $count = 0;
+    $items_processed = 0;
+	$day_no = -1;
+	$the_day = '';
+    foreach ( $data->hourly->data as $key => $value ) {
+        
+        if ( ++$count%2 === 1 ) { // process even only
+            $items_processed++;
+			if ( $the_day != date( 'j', $value->time ) ) {
+				$the_day = date( 'j', $value->time);
+				$items_processed = 1;
+				$day_no++;
+			}
+
+            $id_suffix = str_pad( $items_processed * 2, 2 , '0', STR_PAD_LEFT );
+
+            // $return_data['data']['hourly'][$key]['key'] = $key;
+            // $return_data['data']['hourly'][$key]['count'] = $count;
+            // $return_data['data']['hourly'][$key]['items_processed'] = $items_processed;
+            // $return_data['data']['hourly'][$key]['id_suffix'] = $id_suffix;
+            $return_data['data']['hourly'][$key]['value_attr'] = $day_no;
+            // $return_data['data']['hourly'][$key]['time'] = date( 'j M Y, ga', $value->time );
+            $return_data['data']['hourly'][$key]['html'] = 
+            '<dshr' . $id_suffix . ' id="dshr' . $id_suffix . '" class="dshr" value="' . $day_no . '">' .
+			'<span>' .
+			'<span style="display: inline-block;vertical-align:top;width: 50px;font-size: 1.3em;">' . date( 'ga', $value->time ) . '</span>' . 
+			'<span style="display: inline-block;margin: 0px 0px 10px 15px;font-size: 0.8em;">' . $value->summary . 
+			'<span style="font-size: 1.0em;display: block;padding: 0px;">' .
+            'Temperature <span style="font-size: 1.0em;color: dodgerblue;">' . number_format( $value->temperature, 0 ) . '</span>&#176C | ' .
+            'Wind <span style="font-size: 1.0em;color: dodgerblue;">' . number_format( $value->windSpeed, 1 ) . '</span>m/s, ' . convert_wind_direction( $value->windBearing ) . ' | ' .
+            'Cloud cover <span style="font-size: 1.0em;color: dodgerblue;">' . number_format( $value->cloudCover * 100, 0 ) . '</span>% | ' .
+			'Visibility <span style="font-size: 1.0em;color: dodgerblue;">' . number_format( $value->visibility, 1 ) . '</span>km' .
+			'</span>' .
+			'</span>' .
+			'</span>' .
+            '</dshr' . $id_suffix . '>';
+
+        }
+    }
+
+	date_default_timezone_set( $local_timezone );
+
+	////////////////////////////////////////////////////
+
 
 		$return_data['rc'] = '1';
 		$return_data['errmsg'] = 'DarkSky responded...';
 		return $return_data;
+// END od DarkSky API
 
+// invalid source		
 	} else {
 		$return_data['rc'] = '0';
 		$return_data['errmsg'] = 'Invalid source';
