@@ -526,7 +526,7 @@ function search_weather_lang ( $post ) {
 	$return_data = array();
 
 	# get languages matching pattern
-	$sql = "SELECT * FROM tbl_language WHERE language like ?";
+	$sql = "SELECT * FROM tbl_language WHERE darksky_support = TRUE AND language like ?";
 	$params = array( $post['langname'] ); //if no params then must be "array()", otherwise values comma separated
 	$pdo_return_data = pdo_db_call ( __FUNCTION__, 1, '', $sql, $params, 'fetchAll', 2 );
 	if ( $pdo_return_data['rc'] == '1' ) {
