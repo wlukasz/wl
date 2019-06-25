@@ -10,24 +10,12 @@ SET GLOBAL slow_query_log = 'OFF';
 -- run the below in mysql console to see where logs are written to
 show global variables like '%log%';
 ---
-This is upgrade from version 0.0.0 to 0.0.1: 
-project started: 	22 Mar 2018 
-	implemented:	
 
-- REMEMBER: to U P D A T E  constant "VERSION" in lib/settings.php 
-
------------------------------------------------------------------------------------------------------------------------------------------------------
-Overview of change: 
-
-1. User Management
+------------------------------------------------------------------------------------------------------------------------------------------
+Database CHanges:
  
------------------------------------------------------------------------------------------------------------------------------------------------------
-New Tables to be created/populated:
-
-
------------------------------------------------------------------------------------------------------------------------------------------------------
-Existing Tables to be modified:
- 
+ALTER TABLE `tbl_language` ADD `darksky_support` BOOLEAN NOT NULL DEFAULT FALSE ;
+Refresh  tbl_language from devl
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 Notes:
