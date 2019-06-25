@@ -1127,8 +1127,10 @@ svg {
 					if ( $( this ).html() === 'more...' ) {
 						$( this ).html( 'less...' );
 						var hourly_items_count = populate_hourly_grid ( darkskyData, loopCount );
-						$( '.dshr' ).hide();
-						run_vbar_and_show( hourly_items_count );
+// The below 2 lines of code have been commented out disable vbar - it's not working correctly
+// so we just show the hourly items and not plot the vbar
+						// $( '.dshr' ).hide();
+						// run_vbar_and_show( hourly_items_count );
 					} else {
 						$( this ).html( 'more...' );
 					}
@@ -1166,6 +1168,7 @@ function populate_hourly_grid ( darkskyData, loopCount ) {
 } // populate_hourly_grid
 
 function run_vbar_and_show( hourly_items_count ) {
+
 // ProgressBar.js definitions 
 // Line
 	if (typeof dsvbarpath != "undefined") { // only run bar if hourly data exists
