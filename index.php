@@ -562,10 +562,10 @@ div.formfields {
   height: 153px;
 }
 
-#dsvbarpath {
-  /* width: 100px; */
-  /* height: 400px; */
-}
+/* #dsvbarpath {
+  width: 100px;
+  height: 400px;
+} */
 
 svg {
   /* width: 100%;
@@ -828,6 +828,7 @@ svg {
 					if ( msg.action == "findcity" ) {
 						$( '#lang' ).val( '' );
 						$( '#submitfindcity' ).fadeOut();
+
 						if ( strWeatherSource === 'openweathermap' ) {
 							if ( msg.rc == "1" )  {
 								// set google map
@@ -862,7 +863,16 @@ svg {
 // ##############################
 						} else if ( strWeatherSource === 'darksky' ) {
 							if ( msg.rc == "1" )  {
+
 								darkskyData = msg.data;
+
+								// clear any hourly dropdowns
+								$( '.togglehourly' ).each( function() {
+									$( this ).html( 'more...' );
+								});
+								$( '.hourly' ).hide();
+								$( '.dshr' ).hide();
+
 								$( '#dsarch' ).html( '' ); // clear arch container or it writes over itself on repeated searches
 
 								// populate common weather fields
