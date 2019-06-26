@@ -658,6 +658,15 @@ svg {
 			}
 		<?php } ?>
 
+		// prevent submitting of '#findcity-form' form on Enter key
+		$( '#findcity-form' ).on( 'keyup keypress', function(e) {
+			var keyCode = e.keyCode || e.which;
+			if ( keyCode === 13 ) { 
+				e.preventDefault();
+				return false;
+			}
+		});
+
 		$( '.userlinks' ).on( 'click', function() {
 			slide_up_topmenu ();
 			menuToggledBy = 'dummymenuToggledBy';
