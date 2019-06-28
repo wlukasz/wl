@@ -71,6 +71,7 @@ js/functions.js
 		$( '#'+VisibleContentID ).css( 'display' , 'block' );
 		
 		$( '#homeicon' ).click(  function() { 
+			$( '#hsel' ).fadeOut();
 			$( '#cpik' ).fadeOut();
 			$( '#darksky-options' ).fadeOut();
 			$( '#findcitybox' ).val( '' );

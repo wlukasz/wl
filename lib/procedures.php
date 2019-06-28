@@ -962,4 +962,81 @@ function convert_wind_direction ( $wind_direction ) {
 
 } // convert_wind_direction
 
+function get_supported_countries () {
+   $sql = "SELECT * FROM tbl_country WHERE newsapi_support = true ORDER BY country";
+   $params = array(); //if no params then must be "array()", otherwise values comma separated
+   $pdo_return_data = pdo_db_call ( __FUNCTION__, 1, '', $sql, $params, 'fetchAll', 2 );
+   if ( $pdo_return_data['rc'] == '1' ) {
+		if ( !$pdo_result = $pdo_return_data['result'] ) { // null returned - no match
+			$return_data['rc'] = '2';
+		} else {
+			$return_data['rc'] = '1';
+			$html = '<select id="hlinescsel" name="hlinescsel" style="height: 36px; color: dodgerblue" value="" title="The country you want to get headlines for. (optional)" placeholder="News country"><option value="">all countries</option>';
+		
+			foreach ( $pdo_result  as $key => $value ) {
+				$html .= '<option value="' . strtolower( $value['a2_iso'] ) . '">' . ucwords( strtolower( $value['country'] ) ) . '</option>';
+			}
+			$html .= '</select>';
+			$return_data['html'] = $html;
+		}
+   } else {
+      $return_data['rc'] = '0';
+      $return_data['errmsg'] = 'System Error.\nCould not retrieve country flag.';
+   }
+
+   return $return_data;
+
+} // get_supported_countries
+
+function get_news_headlines ( $post ) {
+
+	$return_data = array();
+
+	if ( $post['hlinesrcoption'] == '1') {
+		$q = str_replace( ' ', ',', $post['hlinesqbox'] );
+		$country = '';
+		$category = '';
+		$source = $post['hlinessourcesel'];
+	} elseif ( $post['hlinesrcoption'] == '0') {
+		$q = str_replace( ' ', ',', $post['hlinesqbox'] );
+		$country = $post['hlinescsel'];
+		$category = $post['hlinesctgsel'];
+		$source = '';
+		if ( $q == '' && $country == '' && $category == '' ) {
+			$category = 'general';
+		}
+	} else {
+		$return_data['rc'] = '0';
+		$return_data['errmsg'] = 'Something went wrong...';
+	}
+   
+	$url = 'https://newsapi.org/v2/top-headlines?apiKey=' . API_KEY_NEWSAPI . '&q=' . $q . '&country=' . $country . '&category=' . $category . '&sources=' . $source;
+	if ( !$api_response = file_get_contents( $url ) ) {
+		$return_data['rc'] = '0';
+		$return_data['errmsg'] = $url;
+	} else {
+		$return_data['response'] = json_decode( $api_response );
+		if ( $return_data['response']->status = 'ok' ) {
+
+			foreach ( $return_data['response']->articles as $key => $value ) {
+				$return_data['response']->articles[$key]->time_published = date ( 'j M Y, g:ia', strtotime( $value->publishedAt ) );
+			}
+
+			$return_data['rc'] = '1';
+			$return_data['errmsg'] = 'Data retrieved successfully';
+
+		} elseif ( $return_data['response']->status = 'error' ) {
+			$return_data['rc'] = '0';
+			$return_data['errmsg'] = $return_data['response']->message;
+		} else {
+			$return_data['rc'] = '0';
+			$return_data['errmsg'] = 'Unknown error';
+		}
+
+
+    }
+   
+	return $return_data;
+} // get_news_headlines
+
 ?>

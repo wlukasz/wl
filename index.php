@@ -62,6 +62,17 @@
 			case "findcity":
 				$return_array = get_weather_data ( $_POST );
 				break;
+			case "getnewscountries":
+				$return_array = get_supported_countries ();
+				break;
+			case "findheadlines":
+				if ( $_POST['hlinesrcoption'] == '1' && $_POST['hlinessourcesel'] == '' ) {
+					$return_array['rc'] = "0";
+					$return_array['errmsg'] = "Source must NOT be EMPTY! Please select one.";
+				} else {
+					$return_array = get_news_headlines ( $_POST );
+				}
+				break;
 			default:
 				$return_array['rc'] = "0";
 				$return_array['errmsg'] = "Invalid Request! " . $_POST['action'];
@@ -89,6 +100,10 @@
  	<?php include("inc/css.inc"); ?>
    <link href="https://fonts.googleapis.com/css?family=Raleway:400,300,600,800,900" rel="stylesheet" type="text/css">
 <style>
+
+a {
+	text-decoration: none;
+} 
 
 /* top level grid definitions */
 
@@ -514,6 +529,54 @@ dshr24 { grid-area: dshr24; }
 	margin: 10px 10px 10px 10px;	
 }
 
+/* NEWS grid definitions */
+/* Headlines NEWS grid definitions */
+
+/* search headlines grid */
+hsel { grid-area: hsel; }
+.headlines-search-grid {
+	display: grid;
+	grid-gap: 1px;
+	grid-template-areas: 
+		"hsel"
+}
+/* END of search headlines grid */
+
+/* headlines results grid */
+htitle { grid-area: htitle; }
+info   { grid-area: info;   }
+photo  { grid-area: photo;  }
+hdesc  { grid-area: hdesc;  }
+hcont  { grid-area: hcont;  }
+
+.headlines-show-grid {
+	display: grid;
+	grid-gap: 1px;
+	grid-template-areas: 
+			"htitle"
+			"info"
+			"photo"
+			"hdesc"
+			"hcont"
+}
+
+@media( min-width: 640px ) {
+	.headlines-show-grid {
+		display: grid;
+		grid-gap: 10px;
+		grid-template-areas: 
+			"htitle htitle"
+			"info   info"
+			"photo  hdesc"
+			"photo  hcont"
+	}
+}
+/* END of headlines results grid */
+
+/* END of Headlines NEWS grid definitions */
+/* END of NEWS grid definitions */
+
+
 .userlinks:hover {
 	background-color: WhiteSmoke;
 	color: red;
@@ -596,6 +659,7 @@ svg {
 		$( '#cpik' ).hide();
 		$( '#darksky-options' ).hide();
 		$( '.hourly' ).hide();
+		$( '#hsel' ).hide();
 		<?php if ( isset( $_COOKIE['session_token'] ) ) { ?>
 			$( '.loggedout' ).hide();
 			get_user_details();
@@ -710,6 +774,7 @@ svg {
 				$( '.weather-display').hide();
 				$( '#output-findcity').hide();
 				$( '#darksky-results').hide();
+				$( '#hsel').hide();
 				
 				if ( this.id === 'openweathermap-accept' || this.id === 'darksky-accept' ) {
 					$( '#cpik').fadeIn();
@@ -731,10 +796,63 @@ svg {
 						document.getElementById( 'poweredby' ).href = '#';
 						document.getElementById( 'poweredby' ).text = '';
 					}
-				}	
+				}
+
+// HHHHeadlines
+				if ( this.id === 'news-headlines-accept' ) {
+					get_news_countries ( 'hsel' );
+				}
+				
+				if ( this.id === 'news-everything-accept' ) {
+					alert( 'Reasearch');
+				}
 			}
     	});
-		
+
+function get_news_countries ( divID ) {
+
+	var callData = "ajax=<?php echo $_SERVER['PHP_SELF'];?>&action=getnewscountries";
+	$.ajax({ // ### AJAX this is to do database business ###
+		url:"<?php echo $_SERVER['PHP_SELF'];?>",
+		type:"POST",
+		data : callData,
+		success:function(msg){
+			msg = JSON.parse(msg);
+			if ( msg.rc === '1' ) {
+				$( '#headlinescountryselect' ).html( msg.html );
+				$( "#sourcechkbox" ).prop( "checked", false );
+				$( '#hlinessourcesel' ).hide();
+				$( '#'+divID ).fadeIn();
+			} else {
+				alert ( 'Could not retrieve supported countries');
+			}
+		},
+		error: function (jqXHR, textStatus, errorThrown) {
+			alert("Network Error! "+msg.errmsg);
+		},
+	});  // ### AJAX this is to do database business ###
+} // get_news_countries ()
+
+		$( '#sourcechkbox' ).on( 'change', function() {
+			if ( $( "#sourcechkbox" ).prop( "checked" ) === true ) {
+				$( '.headlinecountryandctg' ).fadeOut();
+				$( '#hlinescsel' ).val( '' );
+				$( '#hlinesctgsel' ).val( '' );
+				$( '#hlinesrcoption' ).val( '1' );
+				setTimeout( function() { 
+					$( '#hlinessourcesel' ).fadeIn();
+				}, 500);
+			} else {
+				$( '#hlinessourcesel' ).fadeOut();
+				$( '#hlinessourcesel' ).val( '' );
+				$( '#hlinesrcoption' ).val( '0' );
+				setTimeout( function() { 
+					$( '.headlinecountryandctg' ).fadeIn();
+				}, 500);
+			}
+    	});
+
+
 		$( '#fpq' ).on( 'click', function() {
 			$( '#'+VisibleContentID ).css( 'display' , 'none' );
 			VisibleContentID = 'userfpass-content';
@@ -949,7 +1067,86 @@ svg {
 						} else {
 							alert( 'Invalid weather source detected') ;
 						}
-					}	
+					}
+
+					// XXXXX News Headlines Results come here
+					if ( msg.action == "findheadlines" ) {
+// console.log( 'msg.hlinesqbox: '+msg.hlinesqbox );
+// console.log( 'msg.hlinescsel: '+msg.hlinescsel );
+// console.log( 'msg.hlinesctgsel: '+msg.hlinesctgsel );
+// console.log( 'msg.hlinessourcesel: '+msg.hlinessourcesel );
+// console.log( 'msg.hlinesrcoption: '+msg.hlinesrcoption );
+// console.log( '------------------------------');
+
+
+						if ( msg.rc = '1' ) {
+// console.log( 'msg.response.status: '+msg.response.status );
+
+							var headlineHtml = '';
+							// populate news data
+							$.each( msg.response.articles, function( index, value ) {
+// console.log( 'src: '+value.source.name );
+// console.log( 'src: '+value.source.name.length > 0 ? 'Source: '+value.source.name : '' );
+// console.log( 'author: '+value.author );
+// console.log( 'time: '+value.time_published );
+// console.log( 'title: '+value.title );
+// console.log( 'desc: '+value.description );
+// console.log( 'url: '+value.url );
+// console.log( 'urlToImage: '+value.urlToImage );
+// console.log( 'content: '+value.content );
+// console.log( '------------------------------');
+
+								if ( value.source.name.length > 0 ) {
+									var sourceName = 'Source '+value.source.name+', '; 
+								} else {
+									var sourceName = '';
+								}
+
+								if ( value.author !== null ) {
+									var authorName = value.author+', '; 
+								} else {
+									var authorName = '';
+								}
+
+								if ( value.urlToImage !== null ) {
+									var imageURL = '<img src="'+value.urlToImage+'" width="100%" height="100%" alt="">'; 
+								} else {
+									var imageURL = '';
+								}
+
+								if ( value.description !== null ) {
+									var deScription = value.description+', '; 
+								} else {
+									var deScription = '';
+								}
+
+								if ( value.content !== null ) {
+									var conTent = value.content+', '; 
+								} else {
+									var conTent = '';
+								}
+
+// AAAAAAAAAAAAAAAAAAAA
+headlineHtml += '<div class="headlines-show-grid" style="margin: 40px 0 0 0;">'
+headlineHtml += '<htitle style="font-size: 2em"><a href="'+value.url+'" target="_blank">'+value.title+'</a></htitle>';
+headlineHtml += '<info style="font-size: 0.8em">'+sourceName+' '+authorName+' Published '+value.time_published+'</info>';
+headlineHtml += '<photo>'+imageURL+'</photo>';
+headlineHtml += '<hdesc style="font-size: 1.5em"><a href="'+value.url+'" target="_blank">'+deScription+'</a></hdesc>';
+headlineHtml += '<hcont style="font-size: 1.0em">'+conTent+'</hcont>';
+headlineHtml += '</div>'
+							});
+
+							$( '#headlines-results' ).html( headlineHtml );
+
+							$( '#'+VisibleContentID ).css( 'display' , 'none' );
+							VisibleContentID = 'headlines-accept-content';
+							$( '#'+VisibleContentID ).css( 'display' , 'block' );
+						} else if  ( msg.rc == "0" )  {
+							alert(msg.errmsg);
+						} else {
+							alert(msg.errmsg);
+						}
+					}
 				},
 			    error: function ( jqXHR, textStatus, errorThrown ) {
 				    msg.rc = "0";
@@ -1263,8 +1460,9 @@ function run_vbar_and_show( hourly_items_count ) {
 				<!-- all menu titles must have ascending numeric values -->
 				<li id="topmenutitle1" class="topmenutitles" value="1">Reserved 1</li>
 				<li id="topmenutitle2" class="topmenutitles" value="2">Weather</li>
-				<li id="topmenutitle3" class="topmenutitles" value="3">Reserved 3</li>
+				<li id="topmenutitle3" class="topmenutitles" value="3">News</li>
 				<li id="topmenutitle4" class="topmenutitles" value="4">Misc</li>
+				<li id="topmenutitle5" class="topmenutitles" value="3">Reserved 5</li>
 				<li id="topmenutitle25" class="topmenutitles" value="25"><div id="userbizotitle"></div></li>
 				
 			</ol> <!-- topmenuolist -->
@@ -1279,36 +1477,222 @@ function run_vbar_and_show( hourly_items_count ) {
 				</div>
 			</div> <!-- homecontents -->
 
-					<cpik id="cpik">
-						<div class="findcity-grid" style="background-color: dodgerblue;">
-							<form id="findcity-form" class="user-biznes-form" action="<?php echo $_SERVER['PHP_SELF'];?>" method="post" enctype="multipart/form-data">
-								<output id="output-findcity" name="output" style="float: right;font-family: Arial;font-size: 0.7em;background-color: white;border-radius: 0 0 3px 3px;padding: 5px;"></output>
-								<input type="hidden" name="antibot" value="" />
-								<input type="hidden" name="ajax" value="<?php echo $_SERVER['PHP_SELF']?>" />
-								<input type="hidden" name="action" value="findcity" />
-								<input type="hidden" id="source" name="source" value="" />
-								<input type="hidden" id="lang" name="lang" value="" />
-								<input type="hidden" id="cityid-findcity" name="cityid" value="" />
+			<hsel id="hsel">
+				<div class="headlines-search-grid" style="background-color: white;">
+					<form id="findhealines-form" class="user-biznes-form" action="<?php echo $_SERVER['PHP_SELF'];?>" method="post" enctype="multipart/form-data" novalidate>
+						<output id="output-findhealines" name="output" style="float: right;font-family: Arial;font-size: 0.7em;background-color: white;border-radius: 0 0 3px 3px;padding: 5px;"></output>
+						<input type="hidden" name="antibot" value="" />
+						<input type="hidden" name="ajax" value="<?php echo $_SERVER['PHP_SELF']?>" />
+						<input type="hidden" name="action" value="findheadlines" />
+						<input type="hidden" id="hlinesrcoption" name="hlinesrcoption" value="0" />
 
-								<div class="input-container inlineblock">
-									<span id="findcitybox-label" class="textbox-label" style="color: white;">Find City</span>	
-									<input id="findcitybox" name="findcitybox" class="forminputs" type="text" size="40" value="" title="Type city and it will show in a list below. Click on city of your choice." placeholder="Find City" autocomplete="off" required>
-								</div>
-								<div id="darksky-options" class="input-container inlineblock">
-									<span id="langbox-label" class="textbox-label" style="color: white;">Select Language</span>	
-									<input id="langbox" name="langbox" class="forminputs" type="text" size="20" value="" title="Type language name, it will show in box below. If not showing, laguage is unavailable, it will default to English. Weather summaries will show in chosen language, all other labels are in English" placeholder="Language (optional)" autocomplete="off">
-								</div>
-								<div class="input-container inlineblock">	
-									<input id="submitfindcity" name="submitfindcity" class="submit-btn" type="submit" style="margin: 0 0 0 0;width: 100%;" value="Display Weather Info" />
-								</div>
-								<img src="img/ajax-loader.gif" class="loading-img inlineblock" alt="Please Wait..."/>
-								<br>
-								<div id="citysearchoutput" style="display: inline-block;margin-left: 5px;color: white;" class="forminputs"></div>
-								<div id="langsearchoutput" style="display: inline-block;margin-left: 300px;color: white;" class="forminputs"></div>
-								<span style="float: right;font-family: Arial;font-size: 0.8em;color: white;padding: 3px;">Powered by <a id="poweredby" href="" target="_blank" style="color: white;"></a></span>
-							</form>
+						<div class="input-container inlineblock">
+							<span id="hlinesqbox-label" class="textbox-label" style="color: dodgerblue;">Search phrase (optional)</span>	
+							<input id="hlinesqbox" name="hlinesqbox" class="forminputs" type="text" value="" title="Keywords or a phrase to search for. (optional)" placeholder="What to search for?" autocomplete="off">
 						</div>
-					</cpik>
+						<div id="headlinescountryselect" class="input-container inlineblock headlinecountryandctg">
+						</div>
+
+						<div class="input-container inlineblock headlinecountryandctg">
+							<select id="hlinesctgsel" name="hlinesctgsel" style="height: 36px; color: dodgerblue" value="" title="The category you want to get headlines for. (optional)" placeholder="News category">
+								<option value="">all categories</option>
+								<option value="business">business</option>
+								<option value="entertainment">entertainment</option>
+								<option value="general">general</option>
+								<option value="health">health</option>
+								<option value="science">science</option>
+								<option value="sports">sports</option>
+								<option value="technology">technology</option>
+							</select>	
+						</div>
+						<div class="input-container inlineblock">
+							<select id="hlinessourcesel" name="hlinessourcesel" style="height: 36px; color: dodgerblue" value="" title="The source you want to get headlines for. (required)" placeholder="News source" required>
+								<option value="">Select news source</option>
+								<option value="abc-news">ABC News</option>
+								<option value="abc-news-au">ABC News (AU)</option>
+								<option value="aftenposten">Aftenposten</option>
+								<option value="al-jazeera-english">Al Jazeera English</option>
+								<option value="ansa">ANSA.it</option>
+								<option value="argaam">Argaam</option>
+								<option value="ars-technica">Ars Technica</option>
+								<option value="ary-news">Ary News</option>
+								<option value="associated-press">Associated Press</option>
+								<option value="australian-financial-review">Australian Financial Review</option>
+								<option value="axios">Axios</option>
+								<option value="bbc-news">BBC News</option>
+								<option value="bbc-sport">BBC Sport</option>
+								<option value="bild">Bild</option>
+								<option value="blasting-news-br">Blasting News (BR)</option>
+								<option value="bleacher-report">Bleacher Report</option>
+								<option value="bloomberg">Bloomberg</option>
+								<option value="breitbart-news">Breitbart News</option>
+								<option value="business-insider">Business Insider</option>
+								<option value="business-insider-uk">Business Insider (UK)</option>
+								<option value="buzzfeed">Buzzfeed</option>
+								<option value="cbc-news">CBC News</option>
+								<option value="cbs-news">CBS News</option>
+								<option value="cnbc">CNBC</option>
+								<option value="cnn">CNN</option>
+								<option value="cnn-es">CNN Spanish</option>
+								<option value="crypto-coins-news">Crypto Coins News</option>
+								<option value="daily-mail">Daily Mail</option>
+								<option value="der-tagesspiegel">Der Tagesspiegel</option>
+								<option value="die-zeit">Die Zeit</option>
+								<option value="el-mundo">El Mundo</option>
+								<option value="engadget">Engadget</option>
+								<option value="entertainment-weekly">Entertainment Weekly</option>
+								<option value="espn">ESPN</option>
+								<option value="espn-cric-info">ESPN Cric Info</option>
+								<option value="financial-post">Financial Post</option>
+								<option value="focus">Focus</option>
+								<option value="football-italia">Football Italia</option>
+								<option value="fortune">Fortune</option>
+								<option value="four-four-two">FourFourTwo</option>
+								<option value="fox-news">Fox News</option>
+								<option value="fox-sports">Fox Sports</option>
+								<option value="globo">Globo</option>
+								<option value="google-news">Google News</option>
+								<option value="google-news-ar">Google News (Argentina)</option>
+								<option value="google-news-au">Google News (Australia)</option>
+								<option value="google-news-br">Google News (Brasil)</option>
+								<option value="google-news-ca">Google News (Canada)</option>
+								<option value="google-news-fr">Google News (France)</option>
+								<option value="google-news-in">Google News (India)</option>
+								<option value="google-news-is">Google News (Israel)</option>
+								<option value="google-news-it">Google News (Italy)</option>
+								<option value="google-news-ru">Google News (Russia)</option>
+								<option value="google-news-sa">Google News (Saudi Arabia)</option>
+								<option value="google-news-uk">Google News (UK)</option>
+								<option value="goteborgs-posten">Göteborgs-Posten</option>
+								<option value="gruenderszene">Gruenderszene</option>
+								<option value="hacker-news">Hacker News</option>
+								<option value="handelsblatt">Handelsblatt</option>
+								<option value="ign">IGN</option>
+								<option value="il-sole-24-ore">Il Sole 24 Ore</option>
+								<option value="independent">Independent</option>
+								<option value="infobae">Infobae</option>
+								<option value="info-money">InfoMoney</option>
+								<option value="la-gaceta">La Gaceta</option>
+								<option value="la-nacion">La Nacion</option>
+								<option value="la-repubblica">La Repubblica</option>
+								<option value="le-monde">Le Monde</option>
+								<option value="lenta">Lenta</option>
+								<option value="lequipe">L'equipe</option>
+								<option value="les-echos">Les Echos</option>
+								<option value="liberation">Libération</option>
+								<option value="marca">Marca</option>
+								<option value="mashable">Mashable</option>
+								<option value="medical-news-today">Medical News Today</option>
+								<option value="metro">Metro</option>
+								<option value="mirror">Mirror</option>
+								<option value="msnbc">MSNBC</option>
+								<option value="mtv-news">MTV News</option>
+								<option value="mtv-news-uk">MTV News (UK)</option>
+								<option value="national-geographic">National Geographic</option>
+								<option value="national-review">National Review</option>
+								<option value="nbc-news">NBC News</option>
+								<option value="new-scientist">New Scientist</option>
+								<option value="new-york-magazine">New York Magazine</option>
+								<option value="news-com-au">News.com.au</option>
+								<option value="news24">News24</option>
+								<option value="newsweek">Newsweek</option>
+								<option value="next-big-future">Next Big Future</option>
+								<option value="nfl-news">NFL News</option>
+								<option value="nhl-news">NHL News</option>
+								<option value="nrk">NRK</option>
+								<option value="politico">Politico</option>
+								<option value="polygon">Polygon</option>
+								<option value="rbc">RBC</option>
+								<option value="recode">Recode</option>
+								<option value="reddit-r-all">Reddit /r/all</option>
+								<option value="reuters">Reuters</option>
+								<option value="rt">RT</option>
+								<option value="rte">RTE</option>
+								<option value="rtl-nieuws">RTL Nieuws</option>
+								<option value="sabq">SABQ</option>
+								<option value="spiegel-online">Spiegel Online</option>
+								<option value="svenska-dagbladet">Svenska Dagbladet</option>
+								<option value="t3n">T3n</option>
+								<option value="talksport">TalkSport</option>
+								<option value="techcrunch">TechCrunch</option>
+								<option value="techcrunch-cn">TechCrunch (CN)</option>
+								<option value="techradar">TechRadar</option>
+								<option value="the-american-conservative">The American Conservative</option>
+								<option value="the-economist">The Economist</option>
+								<option value="the-globe-and-mail">The Globe And Mail</option>
+								<option value="the-hill">The Hill</option>
+								<option value="the-hindu">The Hindu</option>
+								<option value="the-huffington-post">The Huffington Post</option>
+								<option value="the-irish-times">The Irish Times</option>
+								<option value="the-jerusalem-post">The Jerusalem Post</option>
+								<option value="the-lad-bible">The Lad Bible</option>
+								<option value="the-new-york-times">The New York Times</option>
+								<option value="the-next-web">The Next Web</option>
+								<option value="the-sport-bible">The Sport Bible</option>
+								<option value="the-telegraph">The Telegraph</option>
+								<option value="the-times-of-india">The Times of India</option>
+								<option value="the-verge">The Verge</option>
+								<option value="the-wall-street-journal">The Wall Street Journal</option>
+								<option value="the-washington-post">The Washington Post</option>
+								<option value="the-washington-times">The Washington Times</option>
+								<option value="time">Time</option>
+								<option value="usa-today">USA Today</option>
+								<option value="vice-news">Vice News</option>
+								<option value="wired">Wired</option>
+								<option value="wired-de">Wired.de</option>
+								<option value="wirtschafts-woche">Wirtschafts Woche</option>
+								<option value="xinhua-net">Xinhua Net</option>
+								<option value="ynet">Ynet</option>
+							</select>	
+						</div>
+						<div class="input-container inlineblock" style="float:right;">	
+							<input id="submitheadlines" name="submitheadlines" class="submit-btn" type="submit" style="margin: 10px 0 0 0;width: 100%;" value="Display News Headlines" />
+						</div>
+						<img src="img/ajax-loader.gif" class="loading-img inlineblock" alt="Please Wait..."/>
+						<br>
+						<div class="input-container">	
+							<input type="checkbox" id="sourcechkbox" name="sourcechkbox" value="1" />
+							<label for="sourcechkbox"><span style="font-family: Arial;font-size: 0.8em;color: black;padding: 3px;">Search by news source</span></label>
+						</div>
+						<span style="float: right;font-family: Arial;font-size: 0.8em;color: black;padding: 3px;">Powered by <a href="https://newsapi.org" target="_blank" style="color: black;">NewsAPI</a></span>
+					</form>
+				</div>
+			</hsel>
+<!-- SSSSSSSS -->
+			<div id="headlines-accept-content" class="contentscontainers" style="font-family: Raleway, Helvetica, sans-serif;padding: 3px;">
+				<div id="headlines-results" style="background-color: white;padding: 0;"></div>
+			</div>
+
+			<cpik id="cpik">
+				<div class="findcity-grid" style="background-color: dodgerblue;">
+					<form id="findcity-form" class="user-biznes-form" action="<?php echo $_SERVER['PHP_SELF'];?>" method="post" enctype="multipart/form-data">
+						<output id="output-findcity" name="output" style="float: right;font-family: Arial;font-size: 0.7em;background-color: white;border-radius: 0 0 3px 3px;padding: 5px;"></output>
+						<input type="hidden" name="antibot" value="" />
+						<input type="hidden" name="ajax" value="<?php echo $_SERVER['PHP_SELF']?>" />
+						<input type="hidden" name="action" value="findcity" />
+						<input type="hidden" id="source" name="source" value="" />
+						<input type="hidden" id="lang" name="lang" value="" />
+						<input type="hidden" id="cityid-findcity" name="cityid" value="" />
+
+						<div class="input-container inlineblock">
+							<span id="findcitybox-label" class="textbox-label" style="color: white;">Find City</span>	
+							<input id="findcitybox" name="findcitybox" class="forminputs" type="text" size="40" value="" title="Type city and it will show in a list below. Click on city of your choice." placeholder="Find City" autocomplete="off" required>
+						</div>
+						<div id="darksky-options" class="input-container inlineblock">
+							<span id="langbox-label" class="textbox-label" style="color: white;">Select Language</span>	
+							<input id="langbox" name="langbox" class="forminputs" type="text" size="20" value="" title="Type language name, it will show in box below. If not showing, laguage is unavailable, it will default to English. Weather summaries will show in chosen language, all other labels are in English" placeholder="Language (optional)" autocomplete="off">
+						</div>
+						<div class="input-container inlineblock">	
+							<input id="submitfindcity" name="submitfindcity" class="submit-btn" type="submit" style="margin: 0 0 0 0;width: 100%;" value="Display Weather Info" />
+						</div>
+						<img src="img/ajax-loader.gif" class="loading-img inlineblock" alt="Please Wait..."/>
+						<br>
+						<div id="citysearchoutput" style="display: inline-block;margin-left: 5px;color: white;" class="forminputs"></div>
+						<div id="langsearchoutput" style="display: inline-block;margin-left: 300px;color: white;" class="forminputs"></div>
+						<span style="float: right;font-family: Arial;font-size: 0.8em;color: white;padding: 3px;">Powered by <a id="poweredby" href="" target="_blank" style="color: white;"></a></span>
+					</form>
+				</div>
+			</cpik>
 
 			<div id="darksky-accept-content" class="contentscontainers" style="font-family: Raleway, Helvetica, sans-serif;padding: 3px;">
 				<div id="darksky-results" class="darksky-grid" style="background-color: white;padding: 0;">
@@ -1682,10 +2066,15 @@ function run_vbar_and_show( hourly_items_count ) {
 				<span style="display: inline-block;font-size: 1.0em;">Powered by <a href="https://openweathermap.org" target="_blank">OpenWeatherMap</a></span>
 				<br><br>
 				<input type="button" id="darksky-accept" class="userlinks" style="width: 200px;font-size: 1em;" value="Click for Dark Sky" />
-				<span style="display: inline-block;font-size: 1.0em;">Powered by <a href="https://https://darksky.net" target="_blank">DarkSky API</a></span>
+				<span style="display: inline-block;font-size: 1.0em;">Powered by <a href="https://darksky.net" target="_blank">DarkSky API</a></span>
 			</div>
 
-			<div id="topmenutitle3-menuitem" class="topmenuitems" >This item is reserved for future use</div>
+			<!-- News API -->
+			<div id="topmenutitle3-menuitem" class="topmenuitems" >
+			<div style="font-size: 1.0em;">An example of use of a free API from the web. This time it's news. A selection can be made of country or a cateory of news headlines.<br>For more in depth searches an advanced query can be used as well as time period and country.<br>Powered by <a href="https://newsapi.org" target="_blank">News API</a>, Enjoy!<br><br></div>
+				<input type="button" id="news-headlines-accept" class="userlinks" style="width: 200px;font-size: 1em;" value="News Headlines" />
+				<input type="button" id="news-everything-accept" class="userlinks" style="display: inline-block;width: 200px;font-size: 1em;" value="News Article Research" />
+			</div>
 
 			<!-- Miscellaneous items -->
 			<div id="topmenutitle4-menuitem" class="topmenuitems" >
@@ -1696,13 +2085,15 @@ function run_vbar_and_show( hourly_items_count ) {
 					<a href="paralax.php">Parallax</a>
 				</div>
 			</div>
+
+			<div id="topmenutitle5-menuitem" class="topmenuitems" >This item is reserved for future use</div>
 	
 			<!-- User's Business -->
 			<div id="topmenutitle25-menuitem" class="topmenuitems" >
 				<div class="inlineblock" style="width: 50%;list-style-type: none;font-size: 1.3em;line-height: 2.1em;">
 					<!-- <span style="font-size: 1.0em;">All about youser...</span> -->
 					<ol class="inlineblock" style="list-style-type: none;margin-top: 0;font-size: 1.3em;">
-						<li id="userjoin" class="userlinks loggedout" class="userlinks" style="text-align: right;">Join Us<br><p style="margin-top: 0;text-align: left;font-size: 0.6em;line-height: 1.1em;">Why join? We will keep your work for you to access at anytime. You may continue as a guest but your work will be deleted at the end of your session. That's why. </p></li>
+						<li id="userjoin" class="userlinks loggedout" style="text-align: right;">Join Us<br><p style="margin-top: 0;text-align: left;font-size: 0.6em;line-height: 1.1em;">Why join? We will keep your work for you to access at anytime. You may continue as a guest but your work will be deleted at the end of your session. That's why. </p></li>
 						<li id="userlogin" class="userlinks loggedout">Log In</li>
 						<li id="userfpass" class="userlinks loggedout" style="text-align: right;font-size: 0.8em;">Forgot Passsword?</li>
 						<li id="usercpass" class="userlinks loggedin" style="text-align: right;font-size: 0.8em;">Change Passsword</li>
