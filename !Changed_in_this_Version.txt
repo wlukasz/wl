@@ -14,7 +14,7 @@ show global variables like '%log%';
 ------------------------------------------------------------------------------------------------------------------------------------------
 Database CHanges:
  
-ALTER TABLE `tbl_language` ADD `darksky_support` BOOLEAN NOT NULL DEFAULT FALSE ;
+ALTER TABLE `tbl_country` ADD `newsapi_support` BOOLEAN NOT NULL DEFAULT FALSE ;
 Refresh  tbl_language from devl
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------

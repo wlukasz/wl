@@ -4,5 +4,4 @@ wicons/
 !Changed_in_this_Version.txt
 vendor/
 .history
-test_js_svg_progress_bar.php
-test_js_progress_bar.php
+test*.*
